@@ -24,7 +24,7 @@ Then, snap to vertex (with a yellow line?)
 export class SnapVertexTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
-    ActionStack: ActionStack
+    actionStack: ActionStack
     renderer: WebGLRenderer
     controler: Controler
     renderFct: RenderFunction
@@ -53,7 +53,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     {
         super()
         this.scene = params.scene
-        this.ActionStack = params.actionStack
+        this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
         this.domElement = params.domElement ? params.domElement : params.renderer.domElement
@@ -134,7 +134,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
             const to = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
             pos.setXYZ(this.currentIndex, this.previousPos.x, this.previousPos.y, this.previousPos.z)
             if (to.length() !== 0) {
-                this.ActionStack.do( new SnapVertexAction(this.mesh, this.currentIndex, to) )
+                this.actionStack.do( new SnapVertexAction(this.mesh, this.currentIndex, to) )
             }
             this.currentIndex = -1
         }
@@ -213,7 +213,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     }
 
     onMouseUp = (e: MouseEvent) => {
-        this.doAction(this.ActionStack)
+        this.doAction(this.actionStack)
         if (this.dragging && this.currentIndex !== -1) {
 
         }

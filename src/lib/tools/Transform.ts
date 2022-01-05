@@ -1,11 +1,9 @@
 import { Mesh, Object3D, Vector3 } from "three"
-//import { TransformControls } from "three"
 import { TransformControls } from '../third/TransformControls'
 import { MatrixTransformObjectAction } from "../actions"
 import { Tool, ToolParameters } from './Tool'
 import { ToolFactory } from './factory'
 import { ActionStack } from "../actions/ActionStack"
-// import { RenderFunction } from "../utils/RenderFunctions"
 import { RenderFunction } from "@youwol/three-extra"
 
 initialize()

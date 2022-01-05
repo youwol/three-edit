@@ -5,14 +5,14 @@ import { ActionRecorder } from './ActionRecorder'
  * A stack of [[Action]]s
  */
 export class ActionStack {
-    renderFct: Function = undefined
+    callback: Function = undefined
     stackDo  : Array<Action> = []
     stackUndo: Array<Action> = []
     maxSize_ = 10
     recorder = new ActionRecorder
 
-    constructor(renderFct, maxSize = 10) {
-        this.renderFct = renderFct
+    constructor(maxSize = 10, callback: Function = undefined) {
+        this.callback = callback
         this.maxSize_ = maxSize
     }
 
@@ -45,7 +45,7 @@ export class ActionStack {
         if (this.recorder) {
             this.recorder.do(action)
         }
-        this.renderFct()
+        if (this.callback) this.callback()
     }
 
     undo() {
@@ -53,7 +53,7 @@ export class ActionStack {
         if (action) {
             action.undo()
             this.stackUndo.push(action)
-            this.renderFct()
+            if (this.callback) this.callback()
 
             if (this.recorder) {
                 this.recorder.undo()
@@ -66,7 +66,7 @@ export class ActionStack {
         if (action) {
             action.do()
             this.stackDo.push(action)
-            this.renderFct()
+            if (this.callback) this.callback()
 
             if (this.recorder) {
                 this.recorder.do(action)

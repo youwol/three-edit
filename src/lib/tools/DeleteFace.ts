@@ -22,7 +22,7 @@ ToolFactory.register('deleteFace', (params: ToolParameters) => new DeleteFaceToo
 export class DeleteFaceTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
-    ActionStack: ActionStack
+    actionStack: ActionStack
     renderer: WebGLRenderer
     controler: Controler
     renderFct: RenderFunction
@@ -44,7 +44,7 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
     constructor(params: ToolParameters) {
         super()
         this.scene = params.scene
-        this.ActionStack = params.actionStack
+        this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
         this.domElement = params.domElement ? params.domElement : params.renderer.domElement
@@ -150,7 +150,7 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
             this.controler.enabled = false
             const intersect = this.findIndex()
             if (intersect) {
-                this.ActionStack.do( new DeleteFaceAction(this.mesh, intersect.faceIndex) )
+                this.actionStack.do( new DeleteFaceAction(this.mesh, intersect.faceIndex) )
             }
         }
         else {

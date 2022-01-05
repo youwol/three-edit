@@ -24,7 +24,7 @@ ToolFactory.register('flipEdge', (params: ToolParameters) => new FlipEdgeTool(pa
 export class FlipEdgeTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
-    ActionStack: ActionStack
+    actionStack: ActionStack
     renderer: WebGLRenderer
     controler: Controler
     renderFct: RenderFunction
@@ -54,7 +54,7 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
     {
         super()
         this.scene = params.scene
-        this.ActionStack = params.actionStack
+        this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
         this.domElement = params.domElement ? params.domElement : params.renderer.domElement
@@ -177,7 +177,7 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             //     this.ActionStack.do( new FlipEdgeAction(this.mesh, intersect.faceIndex) )
             // }
             console.log(this.v1, this.v2)
-            this.ActionStack.do( new FlipEdgeAction(this.mesh, this.v1, this.v2) )
+            this.actionStack.do( new FlipEdgeAction(this.mesh, this.v1, this.v2) )
         }
         else {
             this.controler.enabled = true

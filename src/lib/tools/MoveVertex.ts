@@ -20,7 +20,7 @@ ToolFactory.register('moveVertex', (params: ToolParameters) => new MoveVertexToo
 export class MoveVertexTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
-    ActionStack: ActionStack
+    actionStack: ActionStack
     renderer: WebGLRenderer
     controler: Controler
     renderFct: RenderFunction
@@ -46,7 +46,7 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
     {
         super()
         this.scene = params.scene
-        this.ActionStack = params.actionStack
+        this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
         this.domElement = params.domElement ? params.domElement : params.renderer.domElement
@@ -123,7 +123,7 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
             const to = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
             pos.setXYZ(this.currentIndex, this.previousPos.x, this.previousPos.y, this.previousPos.z)
             if (to.length() !== 0) {
-                this.ActionStack.do( new MoveVertexAction(this.mesh, this.currentIndex, to) )
+                this.actionStack.do( new MoveVertexAction(this.mesh, this.currentIndex, to) )
             }
             this.currentIndex = -1
         }
@@ -190,7 +190,7 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
 
     onMouseUp = (e: MouseEvent) => {
         //console.log('mouseup', this.mouse.x, this.mouse.y)
-        this.doAction(this.ActionStack)
+        this.doAction(this.actionStack)
         //this.domElement.style.touchAction = ''
         //this.domElement.ownerDocument.removeEventListener('mousemove', this.onMouseMove, false )
         if (this.dragging && this.currentIndex !== -1) {

@@ -20,7 +20,7 @@ ToolFactory.register('deleteVertex', (params: ToolParameters) => new DeleteVerte
 export class DeleteVertexTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
-    ActionStack: ActionStack
+    actionStack: ActionStack
     renderer: WebGLRenderer
     controler: Controler
     renderFct: RenderFunction
@@ -41,7 +41,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
     constructor(params: ToolParameters) {
         super()
         this.scene = params.scene
-        this.ActionStack = params.actionStack
+        this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
         this.domElement = params.domElement ? params.domElement : params.renderer.domElement
@@ -155,7 +155,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
         if (this.intersections.length > 0) {
             this.controler.enabled = false
             const intersect = this.findIndex()
-            this.ActionStack.do( new DeleteVertexAction(this.mesh, intersect.index) )
+            this.actionStack.do( new DeleteVertexAction(this.mesh, intersect.index) )
             this.currentIndex = -1
         }
         else {

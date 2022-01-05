@@ -80,7 +80,7 @@ export class Toolbar {
     }
 
     constructor(params: ToolbarParameters) {
-        this.actionStack    = new ActionStack(params.renderFunctions.render, params.undoSize)
+        this.actionStack    = new ActionStack(params.undoSize, params.renderFunctions.render)
         this.scene           = params.scene
         this.camera          = params.camera
         this.domElement      = params.domElement ? params.domElement : params.renderer.domElement
