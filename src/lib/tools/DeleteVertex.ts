@@ -1,15 +1,14 @@
 import { 
-    BufferAttribute, BufferGeometry, Camera, Color, EventDispatcher, 
-    Mesh, MeshBasicMaterial, Plane, Points, PointsMaterial, Raycaster, Scene, 
-    SphereGeometry, Vector2, Vector3, WebGLRenderer
+    BufferAttribute, BufferGeometry, Camera, EventDispatcher, 
+    Mesh, Plane, Points, Raycaster, Scene, 
+    Vector2, Vector3, WebGLRenderer
 } from "three"
-import { DeleteVertexAction } from '../actions'
+import { DeleteVertexAction, Action } from '../actions'
 import { ToolFactory } from "./factory"
 import { Tool, ToolParameters } from "./Tool"
 import { Controler } from "../controlers"
 import { ActionStack } from "../actions/ActionStack"
 import { getSize } from '../utils/getSize'
-//import { RenderFunction } from "../utils/RenderFunctions"
 import { RenderFunction } from "@youwol/three-extra"
 import { createCircleSprite } from "../utils/createCircleSprite"
 
@@ -72,6 +71,10 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
         dom.style.cursor = ''
     }
 
+    executeAction(action: Action) {
+        this.actionStack.do( action )
+    }
+
     dispose() {
         this.detachObject()
         const dom = this.domElement
@@ -98,11 +101,6 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
         this.raycaster.params.Points.threshold = threshold
         this.points = new Points(this.mesh.geometry)
         this.scene.add(this.points);
-
-        //const size = getSize(mesh) ;
-        //this.marker.scale.set(size/2, size/2, size/2);
-        //(this.points.material as PointsMaterial).size = size;
-        //(this.points.material as PointsMaterial).color = new Color('#ffff00')
         
         this.points.visible = false
     }
@@ -155,7 +153,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
         if (this.intersections.length > 0) {
             this.controler.enabled = false
             const intersect = this.findIndex()
-            this.actionStack.do( new DeleteVertexAction(this.mesh, intersect.index) )
+            this.executeAction( new DeleteVertexAction(this.mesh, intersect.index) )
             this.currentIndex = -1
         }
         else {
@@ -191,7 +189,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
         this.intersections.length = 0 // reset the result array
     }
 
-    private findIndex(): {index:number, point: Vector3, vertex: Vector3} {
+    protected findIndex(): {index:number, point: Vector3, vertex: Vector3} {
         const intersects = this.raycaster.intersectObject(this.points)
         if (intersects.length === 0) {
             this.currentIndex = -1
@@ -210,7 +208,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
     }
 
     // Plane where the vertex is going to move
-    private setPlane(point: Vector3) {
+    protected setPlane(point: Vector3) {
         this.planeNormal.subVectors(this.camera.position, point).normalize()
         this.plane.setFromNormalAndCoplanarPoint(this.planeNormal, point)
     }

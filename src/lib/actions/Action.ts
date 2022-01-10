@@ -14,4 +14,4 @@ export abstract class Action {
  * Interface for executing an action parameterized in json (string)
  * and without any undo/redo
  */
-export type executeAction = (mesh: Mesh, json: string) => boolean
+export type executeAction = (mesh: Mesh, json: string, isAction: boolean) => boolean

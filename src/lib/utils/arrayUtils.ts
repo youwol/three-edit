@@ -1,6 +1,6 @@
 
 export type TypedArray =
-    | Int8Array
+      Int8Array
     | Uint8Array
     | Uint8ClampedArray
     | Int16Array
@@ -15,6 +15,13 @@ export function cloneArray(array: TypedArray | number[]) {
         return [...array]
     }
     return array.slice()
+}
+
+export function newArray(array: TypedArray | number[], size: number) {
+    if (Array.isArray(array)) {
+        return new Array(size)
+    }
+    return cloneTA(array, size)
 }
 
 // From https://stackoverflow.com/a/32233690

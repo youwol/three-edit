@@ -8,7 +8,6 @@ import { Controler } from "../controlers"
 import { ToolFactory } from './factory'
 import { Tool, ToolParameters } from "./Tool"
 import { MoveObjectAction } from '../actions'
-//import { RenderFunction } from "../utils/RenderFunctions"
 import { RenderFunction } from "@youwol/three-extra"
 
 ToolFactory.register('moveObject', (params: ToolParameters) => new MoveObjectTool(params) )

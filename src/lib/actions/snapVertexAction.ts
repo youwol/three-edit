@@ -6,19 +6,20 @@ const _name_ = "SnapVertex"
 /**
  * @see serialize
  */
- export function executeSnapVertex(mesh: Mesh, json: any): boolean {
+ export function executeSnapVertex(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
 
     const id = json.vertexID
-    const target = json.targetID
+    const to = new Vector3()
+    to.fromArray(json.to)
 
-    const x = mesh.geom.attributes.position.getX(target)
-    const y = mesh.geom.attributes.position.getY(target)
-    const z = mesh.geom.attributes.position.getZ(target)
+    if (isAction) {
+        return new SnapVertexAction(mesh, id, to)
+    }
 
-    mesh.geometry.attributes.position.setXYZ(id, x, y, z)
+    mesh.geometry.attributes.position.setXYZ(id, to.x, to.y, to.z)
     mesh.geometry.attributes.position.needsUpdate = true
     mesh.geometry.computeBoundingBox()
     mesh.geometry.computeBoundingSphere()
@@ -30,7 +31,7 @@ export class SnapVertexAction implements Action {
     geom: BufferGeometry = undefined
     from = new Vector3
 
-    constructor(private obj: Mesh, private id: number, private to: number) {
+    constructor(private obj: Mesh, private id: number, private to: Vector3) {
         this.geom = obj.geometry as BufferGeometry
         const x = this.geom.attributes.position.getX(this.id)
         const y = this.geom.attributes.position.getY(this.id)
@@ -46,16 +47,12 @@ export class SnapVertexAction implements Action {
         return {
             name: _name_,
             vertexID: this.id,
-            targetID: this.to
+            to: this.to.toArray()
         }
     }
 
     do() {
-        // get the to-vertex
-        const x = this.geom.attributes.position.getX(this.to)
-        const y = this.geom.attributes.position.getY(this.to)
-        const z = this.geom.attributes.position.getZ(this.to)
-        this.geom.attributes.position.setXYZ(this.id, x, y, z)
+        this.geom.attributes.position.setXYZ(this.id, this.to.x, this.to.y, this.to.z)
         this.geom.attributes.position.needsUpdate = true
         this.geom.computeBoundingBox()
         this.geom.computeBoundingSphere()

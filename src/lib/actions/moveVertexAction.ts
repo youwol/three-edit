@@ -6,7 +6,7 @@ const _name_ = "MoveVertex"
 /**
  * @see serialize
  */
- export function executeMoveVertex(mesh: Mesh, json: any): boolean {
+ export function executeMoveVertex(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
@@ -14,6 +14,10 @@ const _name_ = "MoveVertex"
     const id = json.vertexID
     const to = new Vector3
     to.fromArray(json.to)
+
+    if (isAction) {
+        return new MoveVertexAction(mesh, id, to)
+    }
 
     mesh.geometry.attributes.position.setXYZ(id, to.x, to.y, to.z)
     mesh.geometry.attributes.position.needsUpdate = true

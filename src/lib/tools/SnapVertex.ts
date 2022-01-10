@@ -9,18 +9,13 @@ import { Tool, ToolParameters } from "./Tool"
 import { Controler } from "../controlers"
 import { ActionStack } from "../actions/ActionStack"
 import { getSize } from "../utils/getSize"
-//import { RenderFunction } from "../utils/RenderFunctions"
 import { RenderFunction } from "@youwol/three-extra"
 import { createCircleSprite } from "../utils/createCircleSprite"
 
-ToolFactory.register('moveVertex', (params: ToolParameters) => new SnapVertexTool(params) )
+ToolFactory.register('snapVertex', (params: ToolParameters) => new SnapVertexTool(params) )
 
 // ------------------------------------------------
 
-/*
-First click and stay pressed => vertex to move
-Then, snap to vertex (with a yellow line?)
-*/
 export class SnapVertexTool extends EventDispatcher implements Tool {
     scene: Scene
     camera: Camera
@@ -34,6 +29,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
 
     marker = undefined // the moving vertex
     target = undefined // the target vertex
+    targetID = -1
 
     mouse = new Vector2
     intersections = []
@@ -109,11 +105,15 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     attachObject(mesh: Mesh) {
         this.detachObject()
         this.mesh = mesh
+
         const threshold = getSize(mesh)
         this.raycaster.params.Points.threshold = threshold
+
         this.points = new Points(this.mesh.geometry)
-        const size = getSize(mesh) ;
-        this.scene.add(this.points);
+        this.scene.add(this.points)
+
+        // this.otherPoints = new Points(this.mesh.geometry)
+        // this.scene.add(this.otherPoints)
 
         this.points.visible = false
     }
@@ -128,30 +128,13 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     }
 
     private doAction(stack: ActionStack): void {
-        if (this.currentIndex !== -1) {
-            const id = this.currentIndex
-            const pos = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
-            const to = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
-            pos.setXYZ(this.currentIndex, this.previousPos.x, this.previousPos.y, this.previousPos.z)
-            if (to.length() !== 0) {
-                this.actionStack.do( new SnapVertexAction(this.mesh, this.currentIndex, to) )
-            }
-            this.currentIndex = -1
-        }
-    }
-
-    private snappingNode() {
-        const intersect = this.findIndex()
         const pos = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
-        if (intersect && intersect.index !== -1) {
-            const id = intersect.index
-            this.setPlane(intersect.point)
-            this.raycaster.ray.intersectPlane(this.plane, this.planePoint)
-            this.target.position.copy( new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id)) )
-            this.target.visible = true
-        }
-        else {
-            this.marker.visible = false
+
+        if (this.currentIndex !== -1 && this.targetID !== -1 && this.currentIndex !== this.targetID) {
+            const to = new Vector3(pos.getX(this.targetID), pos.getY(this.targetID), pos.getZ(this.targetID))
+            this.actionStack.do( new SnapVertexAction(this.mesh, this.currentIndex, to) )
+            this.currentIndex = -1
+            this.targetID = -1
         }
     }
 
@@ -200,6 +183,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
             if (this.currentIndex !== -1) {
                 this.previousPos = intersect.vertex
             }
+            this.snappingNode()
         }
         else {
             this.dragging = false
@@ -209,6 +193,9 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     onMouseMove = (e: MouseEvent) => {
         this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
         this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
+        if (this.dragging) {
+            this.snappingNode()
+        }
         super.dispatchEvent( {type: 'change', event: e} )
     }
 
@@ -220,27 +207,44 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
         this.controler.enabled = true
         this.dragging = false
         this.domElement.style.cursor = ''
+        this.target.visible = false
+    }
+
+    private snappingNode() {
+        /*
+        In fact, we have to snap on other Object3D. Therefore, we have to:
+            - use objects in scene (see this.scene)
+            - convert them in points (see attachObject)
+            - In the SnapVertexAction, use the postion instead of the target ID
+        */
+        const intersects = this.raycaster.intersectObject(this.points)
+        if (intersects.length === 0) {
+            this.targetID = -1
+            this.target.visible = false
+            return
+        }
+
+        const inter = intersects[0]
+        const index = inter.index
+
+        const pos = this.mesh.geometry.attributes.position as BufferAttribute
+        if (inter && index !== -1) {
+            this.target.position.copy( new Vector3(pos.getX(index), pos.getY(index), pos.getZ(index)) )
+            this.target.visible = true
+            this.targetID = index
+        }
+        else {
+            this.target.visible = false
+            this.targetID = -1
+        }
     }
 
     private track(e: MouseEvent) {
         this.raycaster.setFromCamera( this.mouse, this.camera )
-        const pos = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
 
         // Dragging an already picked vertex
-        if (this.currentIndex !== -1 && this.dragging === true) {
-            this.raycaster.ray.intersectPlane(this.plane, this.planePoint)	
-            
-            this.marker.position.copy(this.planePoint)
-            this.marker.visible = true
-            pos.setXYZ(
-                this.currentIndex, 
-                this.planePoint.x,
-                this.planePoint.y, 
-                this.planePoint.z)
-            pos.needsUpdate = true
-        }
-        // Highlight a vertex close to the cursor
-        else {
+        if (this.dragging === false) {
             const intersect = this.findIndex()
             if (intersect && intersect.index !== -1) {
                 const id = intersect.index
@@ -248,7 +252,6 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
                 this.raycaster.ray.intersectPlane(this.plane, this.planePoint)
                 this.marker.position.copy( new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id)) )
                 this.marker.visible = true
-                //this.currentIndex = -1
             }
             else {
                 this.marker.visible = false
@@ -269,7 +272,6 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
         const x = (this.mesh.geometry as BufferGeometry).attributes.position.getX(index)
         const y = (this.mesh.geometry as BufferGeometry).attributes.position.getY(index)
         const z = (this.mesh.geometry as BufferGeometry).attributes.position.getZ(index)
-        //console.log(index, x, y, z)
         this.currentIndex = index
         this.setPlane(inter.point)
         return {index, point: inter.point, vertex: new Vector3(x,y,z)}

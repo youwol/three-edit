@@ -6,13 +6,17 @@ const _name_ = "MoveObject"
 /**
  * @see serialize
  */
- export function executeMoveObject(mesh: Mesh, json: any): boolean {
+ export function executeMoveObject(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
 
     const translation = new Vector3
     translation.fromArray(json.translation)
+
+    if (isAction) {
+        return new MoveObjectAction(mesh, translation)
+    }
 
     const geom  = mesh.geometry as BufferGeometry
     geom.translate( translation.x,  translation.y, translation.z)

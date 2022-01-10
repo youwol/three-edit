@@ -105,13 +105,28 @@
 				<div id='move-vertex'><i class='fa fa-edit'></i></div>
 			</div>
 			<div class='buttonIcon'>
+				<div id='snap-vertex'><i class='fa fa-user-edit'></i></div>
+			</div>
+			<!-- <div class='buttonIcon'>
+				<div id='collapse-vertex'><i class='fa fa-spider'></i></div>
+			</div> -->
+			<div class='buttonIcon'>
 				<div id='del-vertex'><i class='fa fa-trash-restore-alt'></i></div>
 			</div>
 			<div class='buttonIcon'>
 				<div id='del-face'><i class='fa fa-trash-alt'></i></div>
 			</div>
 			<div class='buttonIcon'>
-				<div id='flip-edge'><i class='fa fa-hand-scissors'></i></div>
+				<div id='flip-edge'><i class='fa fa-random'></i></div>
+			</div>
+			<!-- <div class='buttonIcon'>
+				<div id='unzip'><i class='fa fa-hand-scissors'></i></div>
+			</div> -->
+			<div class='buttonIconS'>
+				<div><i class='fa fa-grip-lines-vertical'></i></div>
+			</div>
+			<div class='buttonIcon'>
+				<div id='smooth'><i class='fa fa-couch'></i></div>
 			</div>
 			<div class='buttonIconS'>
 				<div><i class='fa fa-grip-lines-vertical'></i></div>
@@ -156,14 +171,14 @@
 
 			// --------------------------------------------------
 
-			const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000 )
+			const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 )
 			camera.position.set( 300, 300, 300 )
 			camera.lookAt( 0, 100, 0 )
 
 			// --------------------------------------------------
 
 			const scene = new THREE.Scene
-			scene.background = new THREE.Color('#555555')
+			scene.background = new THREE.Color('#888')
 
 			const light = new THREE.DirectionalLight(0xffffff, 1)
 			light.position.set(1, 1, 1)
@@ -185,9 +200,14 @@
 				polygonOffsetFactor: 1,
 				flatShading: true
 			})
-			//const geometry  = new THREE.TorusKnotBufferGeometry( 100, 30, 100, 16 )
-			//const geometry  = new THREE.TorusGeometry( 10, 3, 16, 100 );
-			const geometry = new THREE.SphereGeometry(100)
+
+			const geometry  = new THREE.TorusKnotBufferGeometry( 100, 30, 100, 16 )
+			// const geometry  = new THREE.TorusGeometry( 100, 50, 16, 50 );
+			// const geometry = new THREE.SphereGeometry(100)
+
+			// const geometry = new THREE.BufferGeometry()
+			// geometry.setAttribute('position', new THREE.Float32BufferAttribute([0,0,0, 1,0,0, 1,1,0, 0,1,0], 3) )
+			// geometry.setIndex( [0,1,2, 0,2,3] );
 
 			const material2 = new THREE.MeshStandardMaterial({
 				color: '#000000', 
@@ -240,12 +260,16 @@
 
 			// --------------------------------------------------
 
+			const actionStack = new threeEdit.ActionStack(20, renderFunctions.render)
+			actionStack.addNotifier( msg => console.log(msg.type + ': '+ msg.name) )
+
 			const toolbar = new threeEdit.Toolbar(new threeEdit.ToolbarParameters({
 				scene, 
 				camera, 
 				renderer, 
 				controler, 
-				renderFunctions, 
+				renderFunctions,
+				actionStack,
 				domElement: document.body,
 				controlerDomName: 'controler',
 				undoDomName: 'undo',
@@ -256,74 +280,25 @@
 			toolbar.addTool('scale',        'scale')
 			toolbar.addTool('rotate',       'rotate')
 			toolbar.addTool('move-vertex',  'moveVertex')
+			toolbar.addTool('snap-vertex',  'snapVertex')
+			toolbar.addTool('collapse-vertex',  'collapseVertex')
 			toolbar.addTool('del-vertex',   'deleteVertex')
 			toolbar.addTool('del-face',     'deleteFace')
 			toolbar.addTool('flip-edge',    'flipEdge')
+			//toolbar.addTool('unzip',    	'unzip')
+			toolbar.addTool('smooth',        'laplacianSmooth')
 			toolbar.addTool('dump-info',    'dumpInfo')
 			toolbar.attachObject(mesh)
 
 			if (0) {
-				threeEdit.play(mesh, `[
-					{
-						"name": "DeleteVertex",
-						"nodeID": 19
-					},
-					{
-						"name": "DeleteVertex",
-						"nodeID": 20
-					},
-					{
-						"name": "MoveVertex",
-						"vertexID": 0,
-						"to": [
-							-11.656792640686035,
-							138.5453338623047,
-							-10.808363914489746
-						]
-					},
-					{
-						"name": "MoveVertex",
-						"vertexID": 1,
-						"to": [
-							-8.494240760803223,
-							129.33766174316406,
-							-8.441226959228516
-						]
-					},
-					{
-						"name": "DeleteFace",
-						"faceID": 4
-					},
-					{
-						"name": "DeleteFace",
-						"faceID": 3
-					},
-					{
-						"name": "MatrixTransformObject",
-						"matrix": [
-							2.778057340033808,
-							0,
-							0,
-							0,
-							0,
-							1,
-							0,
-							0,
-							0,
-							0,
-							1,
-							0,
-							0,
-							0,
-							0,
-							1
-						]
-					}
-				]`)
+				threeEdit.play({
+					mesh,
+					actionStack,
+					json: '[{"name":"MoveVertex","vertexID":64,"to":[-42.07844543457031,173.8583984375,40.05504608154297]},{"name":"MoveVertex","vertexID":60,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"MoveVertex","vertexID":5,"to":[141.11947631835938,106.94769287109375,-46.3559455871582]},{"name":"SnapVertex","vertexID":5,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"DeleteVertex","nodeID":52},{"name":"DeleteFace","faceID":200},{"name":"DeleteFace","faceID":200},{"name":"FlipEdge","v1":55,"v2":56,"face1ID":15,"face2ID":309,"face1IDs":[4,107,55],"face2IDs":[107,4,56]}]',
+					isAction: true,
+					display: false
+				})
 			}
-
-
-			// --------------------------------------------------
 
 			function onWindowResize() {
 				const aspect = window.innerWidth / window.innerHeight;

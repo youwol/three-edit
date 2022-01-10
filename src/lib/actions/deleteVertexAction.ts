@@ -7,12 +7,16 @@ const _name_ = 'DeleteVertex'
 /**
  * @see serialize
  */
- export function executeDeleteVertex(mesh: Mesh, json: any): boolean {
+ export function executeDeleteVertex(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
 
     const id = json.nodeID
+
+    if (isAction) {
+        return new DeleteVertexAction(mesh, id)
+    }
 
     const geom  = mesh.geometry
     const oldArray = geom.index.array

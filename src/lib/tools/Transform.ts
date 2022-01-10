@@ -92,7 +92,7 @@ export class Transform extends TransformControls implements Tool {
         useless = useless && (s.x===1 && s.y===1 && s.z===1)
         useless = useless && (r.x===0 && r.y===0 && r.z===0)
         if (useless === false) {
-            const action = new MatrixTransformObjectAction(this.mesh as Mesh)
+            const action = new MatrixTransformObjectAction(this.mesh, this.mesh.matrixWorld.clone())
             stack.do(action)
         }
         else {

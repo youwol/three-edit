@@ -1,5 +1,7 @@
 import { Mesh } from 'three'
 import {
+    Action,
+    ActionStack,
     executeDeleteFace, 
     executeDeleteVertex, 
     executeFlipEdge, 
@@ -36,7 +38,10 @@ map.set('SnapVertex',               executeSnapVertex)
  * ```
  * @see [[ActionRecoder]]
  */
-export function play(mesh: Mesh, json: string, display = true) {
+export function play(
+    {mesh, json, display=true, isAction=false, actionStack}:
+    {mesh: Mesh, json: string, display?: boolean, isAction?:boolean, actionStack?: ActionStack}
+) {
     const actions = JSON.parse(json)
     actions.forEach( actionParams => {
         if (map.has(actionParams.name) === false) {
@@ -44,6 +49,9 @@ export function play(mesh: Mesh, json: string, display = true) {
         }
         const fct = map.get(actionParams.name)
         if (display) console.log('Doing action:',actionParams)
-        const ok = fct(mesh, actionParams)
+        const a = fct(mesh, actionParams, isAction)
+        if (typeof a !== 'boolean') {
+            actionStack.do(a)
+        }
     })
 }

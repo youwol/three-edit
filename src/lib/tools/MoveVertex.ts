@@ -99,8 +99,8 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
         const threshold = getSize(mesh)
         this.raycaster.params.Points.threshold = threshold
         this.points = new Points(this.mesh.geometry)
-        const size = getSize(mesh) ;
         this.scene.add(this.points);
+        // const size = getSize(mesh) ;
         // this.marker.scale.set(size/2, size/2, size/2);
         // (this.points.material as PointsMaterial).size = size;
         // (this.points.material as PointsMaterial).color = new Color('#ffff00')

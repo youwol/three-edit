@@ -7,12 +7,16 @@ const _name_ = 'DeleteFace'
 /**
  * @see serialize
  */
-export function executeDeleteFace(mesh: Mesh, json: any): boolean {
+export function executeDeleteFace(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
 
     const id = json.faceID
+
+    if (isAction) {
+        return new DeleteFaceAction(mesh, id)
+    }
 
     const geom     = mesh.geometry as BufferGeometry
     const array    = cloneArray(geom.index.array)

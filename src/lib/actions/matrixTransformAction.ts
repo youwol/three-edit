@@ -8,13 +8,17 @@ const _name_ = "MatrixTransformObject"
 /**
  * @see serialize
  */
- export function executeMatrixTransformObject(mesh: Mesh, json: any): boolean {
+ export function executeMatrixTransformObject(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
 
     const matrix = new Matrix4
     matrix.fromArray(json.matrix)
+
+    if (isAction) {
+        return new MatrixTransformObjectAction(mesh, matrix)
+    }
 
     const geom  = mesh.geometry as BufferGeometry
 
@@ -32,9 +36,9 @@ const _name_ = "MatrixTransformObject"
 export class MatrixTransformObjectAction implements Action {
     transform: Matrix4 = undefined
 
-    constructor(private obj: Mesh) {
+    constructor(private obj: Mesh, matrix: Matrix4) {
         this.obj = obj
-        this.transform  = obj.matrixWorld.clone()
+        this.transform  = matrix // obj.matrixWorld.clone()
 
         this.obj.position.set(0,0,0)
         this.obj.scale.set(1,1,1)

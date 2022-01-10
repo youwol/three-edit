@@ -6,8 +6,9 @@ import { ActionRecorder } from './ActionRecorder'
  */
 export class ActionStack {
     callback: Function = undefined
-    stackDo  : Array<Action> = []
-    stackUndo: Array<Action> = []
+    stackDo  : Array<Action>   = []
+    stackUndo: Array<Action>   = []
+    notifiers: Array<Function> = []
     maxSize_ = 10
     recorder = new ActionRecorder
 
@@ -34,6 +35,14 @@ export class ActionStack {
         }
     }
 
+    /**
+     * If you want to be notified when a action is done or undone
+     * @param cb 
+     */
+    addNotifier(cb: Function) {
+        this.notifiers.push(cb)
+    }
+
     do(action: Action) {
         this.stackDo.push(action)
         if (this.stackDo.length>this.maxSize_) {
@@ -45,7 +54,10 @@ export class ActionStack {
         if (this.recorder) {
             this.recorder.do(action)
         }
-        if (this.callback) this.callback()
+
+        const s = action.serialize()
+        s['type'] = 'do'
+        this.notify(s)
     }
 
     undo() {
@@ -53,11 +65,14 @@ export class ActionStack {
         if (action) {
             action.undo()
             this.stackUndo.push(action)
-            if (this.callback) this.callback()
 
             if (this.recorder) {
                 this.recorder.undo()
             }
+
+            const s = action.serialize()
+            s['type'] = 'undo'
+            this.notify(s)
         }
     }
 
@@ -66,11 +81,21 @@ export class ActionStack {
         if (action) {
             action.do()
             this.stackDo.push(action)
-            if (this.callback) this.callback()
 
             if (this.recorder) {
                 this.recorder.do(action)
             }
+
+            const s = action.serialize()
+            s['type'] = 'redo'
+            this.notify(s)
+        }
+    }
+
+    private notify(msg: any) {
+        this.notifiers.forEach( cb => cb(msg) )
+        if (this.callback) {
+            this.callback()
         }
     }
 }

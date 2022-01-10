@@ -14,7 +14,7 @@ export class ToolbarParameters {
     public controler : Controler      = undefined
     public renderFunctions: RenderFunctions = undefined
     public domElement: HTMLElement    = undefined
-    public undoSize  : number
+    public actionStack  : ActionStack = undefined
     public controlerDomName: string  = undefined
     public undoDomName: string  = undefined
     public redoDomName: string  = undefined
@@ -27,19 +27,20 @@ export class ToolbarParameters {
             controler = undefined, 
             renderFunctions, 
             domElement = undefined, 
-            undoSize = 20,
+            actionStack = undefined,
             controlerDomName = undefined,
             undoDomName = undefined,
             redoDomName = undefined
         }:
         {
-            scene?: Scene, 
-            camera?: Camera, 
-            renderer?: WebGLRenderer, 
-            controler?: Controler, 
-            renderFunctions?: RenderFunctions, 
+            actionStack: ActionStack,
+            scene: Scene, 
+            camera: Camera, 
+            renderer: WebGLRenderer, 
+            controler: Controler, 
+            renderFunctions: RenderFunctions, 
+
             domElement?: HTMLElement,
-            undoSize?: number,
             controlerDomName?: string,
             undoDomName?: string,
             redoDomName?: string
@@ -51,7 +52,7 @@ export class ToolbarParameters {
         this.controler  = controler
         this.domElement = domElement
         this.renderFunctions = renderFunctions
-        this.undoSize   = undoSize
+        this.actionStack   = actionStack
         this.controlerDomName = controlerDomName
         this.undoDomName = undoDomName
         this.redoDomName = redoDomName
@@ -80,7 +81,7 @@ export class Toolbar {
     }
 
     constructor(params: ToolbarParameters) {
-        this.actionStack    = new ActionStack(params.undoSize, params.renderFunctions.render)
+        this.actionStack     = params.actionStack //new ActionStack(params.undoSize, params.renderFunctions.render)
         this.scene           = params.scene
         this.camera          = params.camera
         this.domElement      = params.domElement ? params.domElement : params.renderer.domElement

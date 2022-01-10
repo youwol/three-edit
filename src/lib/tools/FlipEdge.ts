@@ -9,13 +9,14 @@ import {
 } from "three"
 import { RenderFunction } from "@youwol/three-extra"
 
-import { FlipEdgeAction }       from '../actions'
+import { Action, FlipEdgeAction }       from '../actions'
 import { ToolFactory }          from "./factory"
 import { Tool, ToolParameters } from "./Tool"
 import { Controler }            from "../controlers"
 import { ActionStack }         from "../actions/ActionStack"
 import { getSize }              from "../utils/getSize"
 import { createCircleSprite } from "../utils/createCircleSprite"
+import { getAdjacentFaces } from "../utils/topology"
 
 ToolFactory.register('flipEdge', (params: ToolParameters) => new FlipEdgeTool(params) )
 
@@ -62,6 +63,10 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
         this.controler = params.controler
 
         this.activate() 
+    }
+
+    getAction(): Action {
+        return new FlipEdgeAction(this.mesh, this.v1, this.v2)
     }
 
     private activate() {
@@ -172,12 +177,7 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
 
         if (this.intersections.length > 0 && this.line.visible === true) {
             this.controler.enabled = false
-            // const intersect = this.findIndex()
-            // if (intersect) {
-            //     this.ActionStack.do( new FlipEdgeAction(this.mesh, intersect.faceIndex) )
-            // }
-            console.log(this.v1, this.v2)
-            this.actionStack.do( new FlipEdgeAction(this.mesh, this.v1, this.v2) )
+            this.actionStack.do( this.getAction() )
         }
         else {
             this.controler.enabled = true
@@ -251,6 +251,14 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
                 }
             }
 
+            // Check that the edge is adjacent to 2 triangles
+            const faces = getAdjacentFaces(this.mesh.geometry.index, face[i1], face[i2])
+            if (faces.length !== 2) {
+                this.line.visible = false
+                this.marker[0].visible = false
+                this.marker[1].visible = false
+                return
+            }
             
             this.marker[0].position.copy(getPoint(i1))
             this.marker[0].visible = true
@@ -285,60 +293,4 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
         this.planeNormal.subVectors(this.camera.position, point).normalize()
         this.plane.setFromNormalAndCoplanarPoint(this.planeNormal, point)
     }
-
-
-    /*
-     * See https://stackoverflow.com/a/51722234
-     */
-    // protected trackEdge(event: MouseEvent) {
-    //     this.mouse.x =  (event.clientX / window.innerWidth ) * 2 - 1
-    //     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
-      
-    //     this.raycaster.setFromCamera(this.mouse, this.camera)
-    //     const intersects = this.raycaster.intersectObject(this.mesh)
-    //     if (intersects.length === 0) {
-    //         this.line.visible = false
-    //         return
-    //     }
-      
-    //     let faceIdx = intersects[0].faceIndex
-    //     let a = intersects[0].face.a
-    //     let b = intersects[0].face.b
-    //     let c = intersects[0].face.c
-    //     const pos = this.mesh.geometry.attributes.position
-
-    //     let lines = [
-    //         new Line3(
-    //             new Vector3().fromBufferAttribute(pos, a * 3 + 0),
-    //             new Vector3().fromBufferAttribute(pos, a * 3 + 1)
-    //         ),
-    //         new Line3(
-    //             new Vector3().fromBufferAttribute(pos, b * 3 + 0),
-    //             new Vector3().fromBufferAttribute(pos, b * 3 + 1)
-    //         ),
-    //         new Line3(
-    //             new Vector3().fromBufferAttribute(pos, c * 3 + 0),
-    //             new Vector3().fromBufferAttribute(pos, c * 3 + 1)
-    //         )
-    //     ]
-      
-    //     let edgeIdx = 0
-    //     this.mesh.worldToLocal(this.localPoint.copy(intersects[0].point))
-      
-    //     let minDistance = 1e30
-    //     for (let i = 0; i < 3; i++) {
-    //         lines[i].closestPointToPoint(this.localPoint, true, this.closestPoint)
-    //         let dist = this.localPoint.distanceTo(this.closestPoint)
-    //         if (dist < minDistance) {
-    //             minDistance = dist
-    //             edgeIdx = i
-    //         }
-    //     }
-      
-    //     const pStart = this.mesh.localToWorld(lines[edgeIdx].start)
-    //     const pEnd   = this.mesh.localToWorld(lines[edgeIdx].end)
-    //     this.line.geometry.attributes.position.setXYZ(0, pStart.x, pStart.y, pStart.z)
-    //     this.line.geometry.attributes.position.setXYZ(1, pEnd.x, pEnd.y, pEnd.z)
-    //     this.line.geometry.attributes.position.needsUpdate = true
-    // }
 }
