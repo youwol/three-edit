@@ -1,6 +1,8 @@
 # @youwol/three-edit
 Module that allows to edit triangulated meshes either globally (rot/trans/scale) or locally (move vertex, del vertex/face, snap node, flip edge, zip/unzip edges...)
 
+![alt text](./media/example.png?raw=true "Example of a control bar for editing a mesh")
+
 ## Missing tools
 - zip edge
 - unzip edge
@@ -10,7 +12,6 @@ Module that allows to edit triangulated meshes either globally (rot/trans/scale)
 - flip normals
 - fill hole
 - fft
-- Laplacian smoothing
 - relax topo
 
 ## Use 
