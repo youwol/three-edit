@@ -811,10 +811,15 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
+"@youwol/io@0.x":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@youwol/io/-/io-0.0.20.tgz#1101293674f39f3e2a9fe28124c9f0856442d8f8"
+  integrity sha512-GJvQGoY0vN65gOYe+AcV79LsupaJc5tsoeXEcomwJtgsvB+FThyAzx+dane4+YBKSbK24CyURTbbkILbghC6EA==
+
 "@youwol/three-extra@0.x":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@youwol/three-extra/-/three-extra-0.0.5.tgz#abd6a829fee75989e74cb5fbe7a6fbd1cf67732d"
-  integrity sha512-M5OG5pswnVCN8spTMHPxSeWDUtPhuihh3/OL7sGN02YoWTkYw2k7j0EXNK1d0l1iGNvm+K3JEQLWqVhxM4yq0A==
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@youwol/three-extra/-/three-extra-0.0.6.tgz#8ad75a81a505ab054a5e18765a4468a4f726f87c"
+  integrity sha512-famqMxlTiH1bLAgiFMrJlb9COzvval1qxV497osLVFDdAEijCEobhPqxjgH4U5vb+EV5C/tVCnVrFe15yEZY5A==
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"

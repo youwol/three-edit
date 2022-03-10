@@ -13,13 +13,14 @@ export function executeLaplacianSmooth(mesh: Mesh, json: any, isAction: boolean)
         return false
     }
 
-    const iter = json.iter
+    const iter = json.iter | 10
+    const damp = json.damp | 0.5
 
     if (isAction) {
-        return new LaplacianSmoothAction(mesh, iter)
+        return new LaplacianSmoothAction(mesh, iter, damp)
     }
 
-    const pos = new BufferAttribute(smooth(mesh, iter), 3)
+    const pos = new BufferAttribute(smooth(mesh, iter, damp), 3)
     mesh.geometry.attributes.position.set( pos )
     mesh.geometry.attributes.position.needsUpdate = true
     mesh.geometry.computeBoundingBox()
@@ -35,10 +36,10 @@ export class LaplacianSmoothAction implements Action {
     oldPos  : BufferAttribute
     newPos  : BufferAttribute
 
-    constructor(private obj: Mesh, private iter: number = 10) {
+    constructor(private obj: Mesh, private iter: number = 10, private damp: number) {
         this.geom = obj.geometry as BufferGeometry
         this.oldPos = cloneArray(this.geom.attributes.position.array)
-        this.newPos = smooth(obj, iter)
+        this.newPos = smooth(obj, iter, damp)
     }
 
     name() {
@@ -48,7 +49,8 @@ export class LaplacianSmoothAction implements Action {
     serialize() {
         return {
             name: _name_,
-            nodeID: this.iter
+            iter: this.iter,
+            damp: this.damp
         }
     }
 
@@ -71,7 +73,7 @@ type OneRing = Node[]
 
 
 
-function smooth(mesh: Mesh, iter: number): TypedArray | number[] {
+function smooth(mesh: Mesh, iter: number, damp: number): TypedArray | number[] {
     const oneRing: Array<OneRing> = []
     const nodes  : Array<Node> = []
 
@@ -96,10 +98,9 @@ function smooth(mesh: Mesh, iter: number): TypedArray | number[] {
             yt /= n
             zt /= n
 
-            const damp = 10
-            const x=node.pos[0], y=node.pos[1], z=node.pos[2]
-            const dx = xt-x, dy=yt-y, dz=zt-z
-            node.setPos(x+dx/damp, y+dy/damp, z+dz/damp)
+            const x = node.pos[0], y = node.pos[1], z = node.pos[2]
+            const dx = xt - x, dy = yt - y, dz = zt - z
+            node.setPos(x + dx*damp, y + dy*damp, z + dz*damp)
         }
     }
 

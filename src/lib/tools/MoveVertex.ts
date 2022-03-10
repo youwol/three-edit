@@ -11,7 +11,7 @@ import { ActionStack } from "../actions/ActionStack"
 import { getSize } from "../utils/getSize"
 //import { RenderFunction } from "../utils/RenderFunctions"
 import { RenderFunction } from "@youwol/three-extra"
-import { createCircleSprite } from "../utils/createCircleSprite"
+import { createCircleSprite } from "@youwol/three-extra"
 
 ToolFactory.register('moveVertex', (params: ToolParameters) => new MoveVertexTool(params) )
 

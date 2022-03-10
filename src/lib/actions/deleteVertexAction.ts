@@ -1,5 +1,4 @@
-import { BufferAttribute, BufferGeometry, Matrix4, Mesh, Vector3 } from 'three'
-import { splice } from '../utils/arrayUtils'
+import { BufferGeometry, Mesh } from 'three'
 import { Action } from './Action'
 
 const _name_ = 'DeleteVertex'

@@ -10,7 +10,7 @@ import { Controler } from "../controlers"
 import { ActionStack } from "../actions/ActionStack"
 import { getSize } from '../utils/getSize'
 import { RenderFunction } from "@youwol/three-extra"
-import { createCircleSprite } from "../utils/createCircleSprite"
+import { createCircleSprite } from "@youwol/three-extra"
 
 ToolFactory.register('deleteVertex', (params: ToolParameters) => new DeleteVertexTool(params) )
 
@@ -62,9 +62,6 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
             this.renderFct()
         })
 
-        // const markerGeometry = new SphereGeometry( 1 )
-        // const makerMaterial = new MeshBasicMaterial( { color: 0xffff00 } )
-        // this.marker = new Mesh( markerGeometry, makerMaterial )
         this.marker = createCircleSprite(0.04)
         this.marker.visible = false
         this.scene.add(this.marker)

@@ -26,6 +26,7 @@ module.exports = {
     },
     externals: [{
         '@youwol/three-extra': "@youwol/three-extra",
+        "@youwol/io": "@youwol/io",
         'three': {
             commonjs:'three',
             commonjs2:'three',

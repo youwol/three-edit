@@ -7,7 +7,7 @@ import { RenderFunctions } from "@youwol/three-extra"
 
 import { ToolFactory } from "./factory"
 import { ToolParameters, Tool } from "./Tool"
-import { createCircleSprite } from "../utils/createCircleSprite"
+import { createCircleSprite } from "@youwol/three-extra"
 
 ToolFactory.register('ruler', (params: ToolParameters) => new Ruler(params) )
 

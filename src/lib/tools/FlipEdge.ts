@@ -9,13 +9,13 @@ import {
 } from "three"
 import { RenderFunction } from "@youwol/three-extra"
 
-import { Action, FlipEdgeAction }       from '../actions'
+import { Action, FlipEdgeAction } from '../actions'
 import { ToolFactory }          from "./factory"
 import { Tool, ToolParameters } from "./Tool"
 import { Controler }            from "../controlers"
 import { ActionStack }         from "../actions/ActionStack"
 import { getSize }              from "../utils/getSize"
-import { createCircleSprite } from "../utils/createCircleSprite"
+import { createCircleSprite } from "@youwol/three-extra"
 import { getAdjacentFaces } from "../utils/topology"
 
 ToolFactory.register('flipEdge', (params: ToolParameters) => new FlipEdgeTool(params) )

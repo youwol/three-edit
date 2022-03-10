@@ -13,7 +13,7 @@ While maintaining [shift] pressed, allow to delete continuously while mouse left
     - Deform the current Mesh
 1. Remesh
 1. Constrained remesh
-1. Laplacian smoothing (DONE but use weighted-LS)
+1. Laplacian smoothing (DONE but use weighted-LS or implicit-smoothing: see [this link](https://github.com/brainexcerpts/laplacian_smoothing_triangle_mesh) for examples in C++)
 1. Create HTML element, embed CSS
     - See [manually creating DOM nested elements](https://github.com/terkelg/facon)
     - See [manually creating CSS in JS](https://github.com/CraigCav/css-zero)

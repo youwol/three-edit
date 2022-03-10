@@ -3,10 +3,20 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Testing Kepler-edit</title>
-		<script src='/node_modules/three/build/three.min.js'></script>
+		<!-- <script src='/node_modules/three/build/three.min.js'></script>
 		<script src='/node_modules/three/examples/js/controls/TrackballControls.js'></script>
 		<script src='/node_modules/@youwol/three-extra/dist/@youwol/three-extra.js'></script>
-		<script src='/dist/@youwol/three-edit.js'></script>	
+		<script src='/node_modules/@youwol/io/dist/@youwol/io.js'></script>
+		<script src='/dist/@youwol/three-edit.js'></script> -->
+
+		<script src='node_modules/three/build/three.min.js'></script>
+		<script src='https://rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js'></script>
+		<script src='/devs/workspace/packages/dataframe/dist/@youwol/dataframe.js'></script>
+		<script src='/devs/workspace/packages/math/dist/@youwol/math.js'></script>
+		<script src='/devs/workspace/packages/io/dist/@youwol/io.js'></script>
+		<script src='/devs/workspace/packages/three-extra/dist/@youwol/three-extra.js'></script>
+		<script src='/devs/workspace/packages/three-edit/dist/@youwol/three-edit.js'></script>
+
 		<script src='https://kit.fontawesome.com/daa834e337.js' crossorigin="anonymous"></script>
 	
 		<style>
@@ -152,13 +162,63 @@
 			<div class='buttonIcon'>
 				<div id='dump-info'><i class='fa fa-paragraph'></i></div>
 			</div>
+			<div class='buttonIcon'>
+				<div id='vertex-info'><i class='fa fa-paragraph'></i></div>
+			</div>
 		</div>
 
 
 		<script>
-			const three   = globalThis['THREE']
-			const threeExtra  = window['@youwol/three-extra']
-			const threeEdit = globalThis['@youwol/three-edit'] //window['@youwol/kepler-edit']
+			const three      = window['THREE']
+			const threeExtra = window['@youwol/three-extra']
+			const threeEdit  = window['@youwol/three-edit'] //window['@youwol/kepler-edit']
+			const io  		 = window['@youwol/io']
+			const math		 = window['@youwol/math']
+
+			function doOneSurface(url) {
+				const promise = fetch(url)
+				.then( res => {
+					if ( res.ok ) return res.text()
+					return undefined
+				})
+				.then( buffer => {
+					if (! buffer) return undefined
+					const df = io.decodeGocadTS(buffer, {shared: false, merge: true})[0]
+					//console.log(df)
+
+					const material  = new THREE.MeshStandardMaterial({
+						color: '#cccccc', 
+						transparent: false, 
+						side: THREE.DoubleSide,
+						polygonOffset: true,
+						polygonOffsetFactor: 1,
+						flatShading: true
+					})
+
+					const geometry = new THREE.BufferGeometry()
+					console.log(math.minMax(df.series.positions))
+					geometry.setAttribute('position', new THREE.Float32BufferAttribute(df.series.positions.array, 3))
+					geometry.setIndex( new THREE.Uint32BufferAttribute(df.series.indices.array, 1))
+
+					const material2 = new THREE.MeshStandardMaterial({
+						color: '#000000', 
+						transparent: false,
+						wireframe: true,
+						polygonOffset: true,
+						polygonOffsetFactor: 1,
+						flatShading: false
+					})
+
+					mesh  = new THREE.Mesh(geometry, material)  // solid object
+					const mesh2 = new THREE.Mesh(geometry, material2) // wireframe object
+					scene.add(mesh)
+					mesh.add(mesh2)
+				})
+				.then( _ => {
+					toolbar.attachObject(mesh)
+					threeExtra.fitScene({scene, camera, controls: controler})
+				})
+			}
 
 			const renderer = new THREE.WebGLRenderer({
 				antialias: true,
@@ -192,6 +252,11 @@
 			light2.position.set(1, -1, -1)
 			scene.add(light3)
 
+			// doOneSurface("/data/arch/mud/Mud_Volcano_top_9421.ts")
+			// doOneSurface("/data/mesh/sphere.ts")
+			doOneSurface("/data/mesh/rectangle.ts")
+
+			/*
 			const material  = new THREE.MeshStandardMaterial({
 				color: '#cccccc', 
 				transparent: false, 
@@ -222,6 +287,7 @@
 			const mesh2 = new THREE.Mesh(geometry, material2) // wireframe object
 			scene.add(mesh)
 			mesh.add(mesh2)
+			*/
 
 			// --------------------------------------------------
 
@@ -288,7 +354,8 @@
 			//toolbar.addTool('unzip',    	'unzip')
 			toolbar.addTool('smooth',        'laplacianSmooth')
 			toolbar.addTool('dump-info',    'dumpInfo')
-			toolbar.attachObject(mesh)
+			toolbar.addTool('vertex-info',    'vertexInfo')
+			// toolbar.attachObject(mesh)
 
 			if (0) {
 				threeEdit.play({

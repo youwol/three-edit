@@ -26,7 +26,7 @@ export class LaplacianSmooth extends EventDispatcher implements Tool {
     }
 
     attachObject(mesh: Mesh) {
-		this.stack.do( new LaplacianSmoothAction(mesh, 1) )
+		this.stack.do( new LaplacianSmoothAction(mesh, 10, 0.5) )
     }
 
     detachObject() {
