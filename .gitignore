@@ -4,7 +4,12 @@ coverage/
 junit.xml
 src/auto_generated.ts
 
+.yw_pipeline/__pycache__
+
 dist/lib
 dist/@youwol
 dist/index.d.ts
 dist/tests
+
+cdn.zip
+**/.DS_Store

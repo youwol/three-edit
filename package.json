@@ -18,7 +18,7 @@
         "test": "jest -c ./jest.config.js --rootDir .",
         "test-coverage": "jest -c ./jest.config.js --rootDir . --collect-coverage --collectCoverageFrom=./src/lib/**/*.ts ",
         "doc": "rm -fr dist/docs && typedoc src/ --exclude src/lib --exclude src/tests --disableSources --out dist/docs --includeVersion --hideGenerator --theme pages-plugin",
-        "serve": "http-server ../../../../ -p 84 -o devs/workspace/packages/three-edit/index.html"
+        "serve": "http-server ../../../../ -p 89 -o devs/workspace/packages/three-edit/index.html"
     },
     "dependencies": {
     },
