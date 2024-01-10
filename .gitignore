@@ -6,10 +6,7 @@ src/auto_generated.ts
 
 .yw_pipeline/__pycache__
 
-dist/lib
-dist/@youwol
-dist/index.d.ts
-dist/tests
+/dist
 
 cdn.zip
 **/.DS_Store
