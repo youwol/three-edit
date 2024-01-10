@@ -1,4 +1,4 @@
-import { Mesh, Object3D, Vector3 } from 'three'
+import { Mesh, Object3D } from 'three'
 import { TransformControls } from '../third/TransformControls'
 import { MatrixTransformObjectAction } from '../actions'
 import { Tool, ToolParameters } from './Tool'
@@ -75,7 +75,7 @@ export class Transform extends TransformControls implements Tool {
         }
         this.mesh = object
 
-        const mesh = object as Mesh
+        const mesh = object
         mesh.geometry.computeBoundingSphere()
         const center = mesh.geometry.boundingSphere.center.clone()
 

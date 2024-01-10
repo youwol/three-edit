@@ -1,6 +1,5 @@
-import { BufferAttribute, BufferGeometry, Matrix4, Mesh, Vector3 } from 'three'
+import { BufferAttribute, BufferGeometry, Mesh } from 'three'
 import { HalfedgeAPI } from '..'
-import { splice, cloneArray } from '../utils/arrayUtils'
 import { Action } from './Action'
 
 const _name_ = 'CollapseVertex'
@@ -48,7 +47,7 @@ export class CollapseVertexAction implements Action {
         private obj: Mesh,
         private id: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
 
         this.oldIndex = this.geom.index.array
         this.oldPos = this.geom.attributes.position.array

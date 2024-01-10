@@ -1,17 +1,11 @@
 import {
-    BufferAttribute,
-    BufferGeometry,
     Camera,
-    Color,
     EventDispatcher,
     Mesh,
-    MeshBasicMaterial,
     Plane,
     Points,
-    PointsMaterial,
     Raycaster,
     Scene,
-    SphereGeometry,
     Vector2,
     Vector3,
     WebGLRenderer,
@@ -136,8 +130,7 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
     private doAction(stack: ActionStack): void {
         if (this.currentIndex !== -1) {
             const id = this.currentIndex
-            const pos = (this.mesh.geometry as BufferGeometry).attributes
-                .position as BufferAttribute
+            const pos = this.mesh.geometry.attributes.position
             const to = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
             pos.setXYZ(
                 this.currentIndex,
@@ -233,8 +226,7 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
 
     private track(e: MouseEvent) {
         this.raycaster.setFromCamera(this.mouse, this.camera)
-        const pos = (this.mesh.geometry as BufferGeometry).attributes
-            .position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
 
         // Dragging an already picked vertex
         if (this.currentIndex !== -1 && this.dragging === true) {
@@ -278,15 +270,9 @@ export class MoveVertexTool extends EventDispatcher implements Tool {
 
         const inter = intersects[0]
         const index = inter.index
-        const x = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getX(index)
-        const y = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getY(index)
-        const z = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getZ(index)
+        const x = this.mesh.geometry.attributes.position.getX(index)
+        const y = this.mesh.geometry.attributes.position.getY(index)
+        const z = this.mesh.geometry.attributes.position.getZ(index)
         //console.log(index, x, y, z)
         this.currentIndex = index
         this.setPlane(inter.point)

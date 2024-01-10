@@ -1,6 +1,4 @@
 import {
-    BufferAttribute,
-    BufferGeometry,
     Camera,
     EventDispatcher,
     Mesh,
@@ -17,8 +15,7 @@ import { ToolFactory } from './factory'
 import { Tool, ToolParameters } from './Tool'
 import { Controler } from '../controlers'
 import { getSize } from '../utils/getSize'
-import { Mouse, RenderFunction } from '@youwol/three-extra'
-import { createCircleSprite } from '@youwol/three-extra'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
 ToolFactory.register(
     'vertexInfo',
@@ -123,8 +120,7 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
     private doAction(): void {
         if (this.currentIndex !== -1) {
             const id = this.currentIndex
-            const pos = (this.mesh.geometry as BufferGeometry).attributes
-                .position as BufferAttribute
+            const pos = this.mesh.geometry.attributes.position
             const p = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
             this.currentIndex = -1
             console.log(id + ':', p.x, p.y, p.z)
@@ -193,8 +189,7 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
 
     private track(e: MouseEvent) {
         this.raycaster.setFromCamera(this.mouse, this.camera)
-        const pos = (this.mesh.geometry as BufferGeometry).attributes
-            .position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
 
         // Highlight a vertex close to the cursor
         const intersect = this.findIndex()
@@ -221,15 +216,9 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
 
         const inter = intersects[0]
         const index = inter.index
-        const x = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getX(index)
-        const y = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getY(index)
-        const z = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getZ(index)
+        const x = this.mesh.geometry.attributes.position.getX(index)
+        const y = this.mesh.geometry.attributes.position.getY(index)
+        const z = this.mesh.geometry.attributes.position.getZ(index)
         //console.log(index, x, y, z)
         this.currentIndex = index
         this.setPlane(inter.point)

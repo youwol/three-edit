@@ -58,14 +58,32 @@ export function splice(
 // ------------ PRIVATE -------------
 
 function cloneTA(array: TypedArray, size: number): TypedArray {
-    if (array instanceof Int8Array) return new Int8Array(size)
-    if (array instanceof Uint8Array) return new Uint8Array(size)
-    if (array instanceof Uint8ClampedArray) return new Uint8ClampedArray(size)
-    if (array instanceof Int16Array) return new Int16Array(size)
-    if (array instanceof Uint16Array) return new Uint16Array(size)
-    if (array instanceof Int32Array) return new Int32Array(size)
-    if (array instanceof Uint32Array) return new Uint32Array(size)
-    if (array instanceof Float32Array) return new Float32Array(size)
-    if (array instanceof Float64Array) return new Float64Array(size)
+    if (array instanceof Int8Array) {
+        return new Int8Array(size)
+    }
+    if (array instanceof Uint8Array) {
+        return new Uint8Array(size)
+    }
+    if (array instanceof Uint8ClampedArray) {
+        return new Uint8ClampedArray(size)
+    }
+    if (array instanceof Int16Array) {
+        return new Int16Array(size)
+    }
+    if (array instanceof Uint16Array) {
+        return new Uint16Array(size)
+    }
+    if (array instanceof Int32Array) {
+        return new Int32Array(size)
+    }
+    if (array instanceof Uint32Array) {
+        return new Uint32Array(size)
+    }
+    if (array instanceof Float32Array) {
+        return new Float32Array(size)
+    }
+    if (array instanceof Float64Array) {
+        return new Float64Array(size)
+    }
     return undefined
 }

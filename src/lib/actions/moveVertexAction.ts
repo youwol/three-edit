@@ -40,7 +40,7 @@ export class MoveVertexAction implements Action {
         private id: number,
         private to: Vector3,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
         //this.pos = this.geom.attributes.position as BufferAttribute
         const x = this.geom.attributes.position.getX(this.id)
         const y = this.geom.attributes.position.getY(this.id)

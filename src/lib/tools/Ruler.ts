@@ -15,11 +15,10 @@ import {
     Line,
     Vector3,
 } from 'three'
-import { RenderFunctions } from '@youwol/three-extra'
+import { RenderFunctions, createCircleSprite } from '@youwol/three-extra'
 
 import { ToolFactory } from './factory'
 import { ToolParameters, Tool } from './Tool'
-import { createCircleSprite } from '@youwol/three-extra'
 
 ToolFactory.register('ruler', (params: ToolParameters) => new Ruler(params))
 
@@ -118,19 +117,19 @@ export class Ruler extends EventDispatcher implements Tool {
             return false
         }
 
-        let x = evt.offsetX
-        let y = evt.offsetY
-        let size = this.renderer.getSize(new Vector2())
-        let mouse = new Vector2(
+        const x = evt.offsetX
+        const y = evt.offsetY
+        const size = this.renderer.getSize(new Vector2())
+        const mouse = new Vector2(
             (x / size.width) * 2 - 1,
             (-y / size.height) * 2 + 1,
         )
-        let raycaster = new Raycaster()
+        const raycaster = new Raycaster()
         raycaster.setFromCamera(mouse, this.camera)
-        let intersects = raycaster.intersectObject(this.mesh)
+        const intersects = raycaster.intersectObject(this.mesh)
 
         if (intersects.length > 0) {
-            let point = intersects[0].point
+            const point = intersects[0].point
 
             if (this.activeLine === undefined) {
                 this.activeLine = new RulerLine(point, this.spriteScene) // new rulerLine
@@ -150,18 +149,18 @@ export class Ruler extends EventDispatcher implements Tool {
     }
 
     onMouseMove = (e: MouseEvent) => {
-        let x = e.offsetX
-        let y = e.offsetY
+        const x = e.offsetX
+        const y = e.offsetY
 
-        let size = this.renderer.getSize(new Vector2())
-        let mouse = new Vector2(
+        const size = this.renderer.getSize(new Vector2())
+        const mouse = new Vector2(
             (x / size.width) * 2 - 1,
             (-y / size.height) * 2 + 1,
         )
 
-        let raycaster = new Raycaster()
+        const raycaster = new Raycaster()
         raycaster.setFromCamera(mouse, this.camera)
-        let intersects = raycaster.intersectObject(this.mesh)
+        const intersects = raycaster.intersectObject(this.mesh)
 
         if (this.activeLine) {
             if (intersects.length > 0) {
@@ -214,8 +213,8 @@ class RulerLine extends Line {
     }
 
     update(point: Vector3) {
-        let sprite1 = this.circleSprite
-        let sprite2 = this.circleSprite
+        const sprite1 = this.circleSprite
+        const sprite2 = this.circleSprite
         sprite1.position.copy(point.clone())
         sprite2.position.copy(point.clone())
     }
@@ -254,9 +253,9 @@ class RulerLine extends Line {
             this.spriteScene.remove(this.sprite)
         }
 
-        let canvas = document.createElement('canvas')
-        let ctx = canvas.getContext('2d')
-        let fontsize = 22
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        const fontsize = 22
 
         ctx.font = 'bolder ' + fontsize + 'px "Open Sans", Arial'
 
@@ -266,13 +265,13 @@ class RulerLine extends Line {
         const v0 = new Vector3(geom.getX(0), geom.getY(0), geom.getZ(0))
         const v1 = new Vector3(geom.getX(1), geom.getY(1), geom.getZ(1))
 
-        let length = v0.clone().sub(v1).length().toFixed(1)
+        const length = v0.clone().sub(v1).length().toFixed(1)
         //let text = '~ ' + length;
-        let text = length.toString()
-        let size = ctx.measureText(text)
-        let paddingLeft = 5
-        let paddingTop = 5
-        let margin = 10
+        const text = length.toString()
+        const size = ctx.measureText(text)
+        const paddingLeft = 5
+        const paddingTop = 5
+        const margin = 10
 
         canvas.width = size.width + paddingLeft * 2 + margin * 2
         canvas.height = fontsize + paddingTop * 2 + margin * 2
@@ -296,15 +295,15 @@ class RulerLine extends Line {
         ctx.font = 'bolder ' + fontsize + 'px "Open Sans", Arial'
         ctx.fillText(text, paddingLeft + margin, paddingTop + margin)
 
-        let texture = new CanvasTexture(canvas)
-        let sprite = new Sprite(
+        const texture = new CanvasTexture(canvas)
+        const sprite = new Sprite(
             new SpriteMaterial({
                 map: texture,
                 sizeAttenuation: false,
             }),
         )
 
-        let h = 0.3
+        const h = 0.3
         sprite.scale
             .set(0.002 * canvas.width, 0.0025 * canvas.height, 1)
             .multiplyScalar(h)

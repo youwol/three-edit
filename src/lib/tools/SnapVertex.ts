@@ -1,6 +1,4 @@
 import {
-    BufferAttribute,
-    BufferGeometry,
     Camera,
     EventDispatcher,
     Mesh,
@@ -18,8 +16,7 @@ import { Tool, ToolParameters } from './Tool'
 import { Controler } from '../controlers'
 import { ActionStack } from '../actions/ActionStack'
 import { getSize } from '../utils/getSize'
-import { RenderFunction } from '@youwol/three-extra'
-import { createCircleSprite } from '@youwol/three-extra'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
 ToolFactory.register(
     'snapVertex',
@@ -141,8 +138,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
     }
 
     private doAction(stack: ActionStack): void {
-        const pos = (this.mesh.geometry as BufferGeometry).attributes
-            .position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
 
         if (
             this.currentIndex !== -1 &&
@@ -249,7 +245,7 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
         const inter = intersects[0]
         const index = inter.index
 
-        const pos = this.mesh.geometry.attributes.position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
         if (inter && index !== -1) {
             this.target.position.copy(
                 new Vector3(pos.getX(index), pos.getY(index), pos.getZ(index)),
@@ -293,15 +289,9 @@ export class SnapVertexTool extends EventDispatcher implements Tool {
 
         const inter = intersects[0]
         const index = inter.index
-        const x = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getX(index)
-        const y = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getY(index)
-        const z = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getZ(index)
+        const x = this.mesh.geometry.attributes.position.getX(index)
+        const y = this.mesh.geometry.attributes.position.getY(index)
+        const z = this.mesh.geometry.attributes.position.getZ(index)
         this.currentIndex = index
         this.setPlane(inter.point)
         return { index, point: inter.point, vertex: new Vector3(x, y, z) }

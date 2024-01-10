@@ -1,10 +1,9 @@
-import { Camera, EventDispatcher, Mesh, Scene, WebGLRenderer } from 'three'
+import { EventDispatcher, Mesh } from 'three'
 import { ActionStack } from '../actions/ActionStack'
 import { Controler } from '../controlers'
 import { ToolFactory } from './factory'
 import { Tool, ToolParameters } from './Tool'
 import { RelaxAction } from '../actions'
-import { RenderFunction } from '@youwol/three-extra'
 
 ToolFactory.register('relax', (params: ToolParameters) => new Relax(params))
 

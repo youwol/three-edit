@@ -15,7 +15,7 @@ export function createSurfaceBorders(mesh: Mesh, color = '#000') {
     const api = new HalfedgeAPI(mesh)
     const borders = api.borderNodes
 
-    let geometry = undefined
+    const geometry = undefined
     if (1) {
         // Fake indices
         const indices = []

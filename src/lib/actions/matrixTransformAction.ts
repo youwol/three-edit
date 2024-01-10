@@ -1,4 +1,4 @@
-import { BufferGeometry, Matrix4, Mesh, Vector3, Quaternion } from 'three'
+import { Matrix4, Mesh, Vector3, Quaternion } from 'three'
 import { Action } from './Action'
 
 // ----------------------------------------------------
@@ -24,7 +24,7 @@ export function executeMatrixTransformObject(
         return new MatrixTransformObjectAction(mesh, matrix)
     }
 
-    const geom = mesh.geometry as BufferGeometry
+    const geom = mesh.geometry
 
     const pos = geom.attributes.position
     pos.applyMatrix4(matrix)
@@ -63,16 +63,20 @@ export class MatrixTransformObjectAction implements Action {
 
         this.transform.decompose(position, quaternion, scale)
         let operation = ''
-        if (position.length() !== 0) operation = 'translation'
-        if (scale.x !== 1 || scale.y !== 1 || scale.z !== 1)
+        if (position.length() !== 0) {
+            operation = 'translation'
+        }
+        if (scale.x !== 1 || scale.y !== 1 || scale.z !== 1) {
             operation = 'scaling'
+        }
         if (
             quaternion.x !== 0 ||
             quaternion.y !== 0 ||
             quaternion.z !== 0 ||
             quaternion.w !== 1
-        )
+        ) {
             operation = 'rotation'
+        }
         return {
             name: _name_,
             matrix: this.transform.toArray(),
@@ -81,20 +85,20 @@ export class MatrixTransformObjectAction implements Action {
     }
 
     do() {
-        const pos = (this.obj.geometry as BufferGeometry).attributes.position
+        const pos = this.obj.geometry.attributes.position
         pos.applyMatrix4(this.transform)
         this.update()
     }
 
     undo() {
-        const geom = this.obj.geometry as BufferGeometry
-        let t = this.transform.clone().invert()
+        const geom = this.obj.geometry
+        const t = this.transform.clone().invert()
         geom.attributes.position.applyMatrix4(t)
         this.update()
     }
 
     update() {
-        const geom = this.obj.geometry as BufferGeometry
+        const geom = this.obj.geometry
         geom.computeBoundingBox()
         geom.computeBoundingSphere()
         geom.attributes.position.needsUpdate = true

@@ -22,7 +22,7 @@ export function executeMoveObject(
         return new MoveObjectAction(mesh, translation)
     }
 
-    const geom = mesh.geometry as BufferGeometry
+    const geom = mesh.geometry
     geom.translate(translation.x, translation.y, translation.z)
 
     return true
@@ -35,7 +35,7 @@ export class MoveObjectAction implements Action {
         private obj: Mesh,
         private u: Vector3,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
     }
 
     name() {

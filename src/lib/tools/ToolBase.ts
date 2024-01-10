@@ -89,8 +89,12 @@ export class ToolBase extends EventDispatcher implements Tool {
     }
 
     detachObject() {
-        if (this.mesh) this.mesh = undefined
-        if (this.controler) this.controler.enabled = true
+        if (this.mesh) {
+            this.mesh = undefined
+        }
+        if (this.controler) {
+            this.controler.enabled = true
+        }
     }
 
     onPointerDown = (e: PointerEvent) => {

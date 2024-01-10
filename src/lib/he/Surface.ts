@@ -31,7 +31,7 @@ export class Surface {
         positions: TypedArray | number[],
         cells: TypedArray | number[],
     ) {
-        let m = new Surface()
+        const m = new Surface()
         m.build(positions, cells)
         return m
     }
@@ -43,7 +43,7 @@ export class Surface {
         const builder = new SurfaceBuilder()
         builder.beginSurface(this)
 
-        let b = new BBox()
+        const b = new BBox()
         for (let i = 0; i < positions.length; i += 3) {
             const p = [
                 positions[i],

@@ -39,7 +39,9 @@ export class Node {
 
     get isOnBorder(): boolean {
         let it = this.he_
-        if (it === undefined) return true
+        if (it === undefined) {
+            return true
+        }
         do {
             if (it.isBorder) {
                 return true
@@ -51,7 +53,9 @@ export class Node {
 
     get degree(): number {
         let it = this.he_
-        if (it === undefined) return 0
+        if (it === undefined) {
+            return 0
+        }
         let result = 0
         do {
             result++
@@ -208,7 +212,9 @@ export class Halfedge {
         const a = this.node.pos
         const b = this.prev.node.pos
         const u = [0, 0, 0]
-        for (let i = 0; i < 3; ++i) u[i] = a[i] - b[i]
+        for (let i = 0; i < 3; ++i) {
+            u[i] = a[i] - b[i]
+        }
         return Math.sqrt(u[0] ** 2 + u[1] ** 2 + u[2] ** 2)
     }
 

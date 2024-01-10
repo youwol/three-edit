@@ -36,7 +36,7 @@ export class SurfaceEditor extends SurfaceBuilder {
 
         const edges_to_delete: Array<Halfedge> = []
         this.deleteFacet(h.facet)
-        let end = h
+        const end = h
 
         do {
             this.setHalfedgeFacet(h, undefined)
@@ -78,7 +78,9 @@ export class SurfaceEditor extends SurfaceBuilder {
         const facets_to_delete: Array<Facet> = []
         let e = v.halfedge
         do {
-            if (e.facet) facets_to_delete.push(e.facet)
+            if (e.facet) {
+                facets_to_delete.push(e.facet)
+            }
             e = e.nextAroundNode
         } while (e !== v.halfedge)
 
@@ -115,7 +117,7 @@ export class SurfaceEditor extends SurfaceBuilder {
             }
         }
 
-        let h = v.halfedge.prev
+        const h = v.halfedge.prev
         let it = h
         do {
             let jt = it.next
@@ -148,9 +150,9 @@ export class SurfaceEditor extends SurfaceBuilder {
         console.assert(h !== g)
         console.assert(this.halfedgesOnSameFacet(h, g))
 
-        let h2 = h.next
-        let g2 = g.next
-        let n = this.newEdge()
+        const h2 = h.next
+        const g2 = g.next
+        const n = this.newEdge()
         this.link(n, h2, 1)
         this.setHalfedgeNode(n, h.node)
 
@@ -206,7 +208,7 @@ export class SurfaceEditor extends SurfaceBuilder {
             return false
         }
 
-        let result = this.newEdge()
+        const result = this.newEdge()
 
         this.link(result.opposite, g.next, 1)
         this.link(result, h.next, 1)
@@ -235,8 +237,8 @@ export class SurfaceEditor extends SurfaceBuilder {
 
     createCenterNode(f: Facet) {
         console.assert(this.is_modified_)
-        let h = f.halfedge
-        let v = this.newNode()
+        const h = f.halfedge
+        const v = this.newNode()
 
         const p = f.barycenter
         this.deleteFacet(f)
@@ -244,8 +246,8 @@ export class SurfaceEditor extends SurfaceBuilder {
         let first = true
         let it = h
         do {
-            let jt = it.next
-            let z = this.newEdge()
+            const jt = it.next
+            const z = this.newEdge()
             this.link(it, z, 1)
             this.link(z.opposite, jt, 1)
             this.setHalfedgeNode(z, v)
@@ -273,12 +275,24 @@ export class SurfaceEditor extends SurfaceBuilder {
     // =======================================================================================
 
     canSwitchEdge(e: Halfedge) {
-        if (e.isBorder) return false
-        if (e.opposite.isBorder) return false
-        if (!e.facet) return false
-        if (!e.opposite.facet) return false
-        if (!e.facet.isTriangle) return false
-        if (!e.opposite.facet.isTriangle) return false
+        if (e.isBorder) {
+            return false
+        }
+        if (e.opposite.isBorder) {
+            return false
+        }
+        if (!e.facet) {
+            return false
+        }
+        if (!e.opposite.facet) {
+            return false
+        }
+        if (!e.facet.isTriangle) {
+            return false
+        }
+        if (!e.opposite.facet.isTriangle) {
+            return false
+        }
         return true
     }
 
@@ -299,11 +313,11 @@ export class SurfaceEditor extends SurfaceBuilder {
             return false
         }
 
-        let e1 = e0.next
-        let e2 = e0.next.next
+        const e1 = e0.next
+        const e2 = e0.next.next
         let e0_opp = e0.opposite
-        let e1_opp = e0_opp.next
-        let e2_opp = e0_opp.next.next
+        const e1_opp = e0_opp.next
+        const e2_opp = e0_opp.next.next
 
         this.deleteFacet(e0.facet)
         this.deleteFacet(e0_opp.facet)
@@ -337,9 +351,11 @@ export class SurfaceEditor extends SurfaceBuilder {
     fillHole(h: Halfedge, triangulate: boolean) {
         console.assert(this.is_modified_)
 
-        if (!h.isBorder) return undefined
+        if (!h.isBorder) {
+            return undefined
+        }
 
-        let facet = this.newFacet()
+        const facet = this.newFacet()
         this.setFacetOnOrbit(h, facet)
         this.makeFacetKey(h)
         if (triangulate) {
@@ -384,7 +400,7 @@ export class SurfaceEditor extends SurfaceBuilder {
         console.assert(p3 !== undefined)
 
         if (Array.isArray(p1)) {
-            let result = this.makeTriangle()
+            const result = this.makeTriangle()
             result.node.setPos(p1)
             result.next.node.setPos(p2)
             result.next.next.node.setPos(p3)
@@ -437,16 +453,16 @@ export class SurfaceEditor extends SurfaceBuilder {
     }
 
     private swapNode(v1: Node, v2: Node) {
-        let v = v1
+        const v = v1
         v1 = v2
         v2 = v
     }
 
     createFacet(v1: Node, v2: Node, v3: Node) {
         console.assert(this.is_modified_)
-        let e12 = this.halfedgeBetween(v1, v2)
-        let e23 = this.halfedgeBetween(v2, v3)
-        let e31 = this.halfedgeBetween(v3, v1)
+        const e12 = this.halfedgeBetween(v1, v2)
+        const e23 = this.halfedgeBetween(v2, v3)
+        const e31 = this.halfedgeBetween(v3, v1)
 
         if (e12 !== undefined && e12.node === v2) {
             this.swapNode(v1, v2)
@@ -458,7 +474,7 @@ export class SurfaceEditor extends SurfaceBuilder {
             this.swapNode(v3, v1)
         }
 
-        let e = this.makeTriangle(v1, v2, v3)
+        const e = this.makeTriangle(v1, v2, v3)
         if (e12) {
             this.glue(
                 e12.isBorder ? e12 : e12.opposite,
@@ -482,9 +498,15 @@ export class SurfaceEditor extends SurfaceBuilder {
     }
 
     canGlue(h0: Halfedge, h1: Halfedge) {
-        if (!h0.isBorder) return false
-        if (!h1.isBorder) return false
-        if (h0.opposite.facet == h1.opposite.facet) return false
+        if (!h0.isBorder) {
+            return false
+        }
+        if (!h1.isBorder) {
+            return false
+        }
+        if (h0.opposite.facet == h1.opposite.facet) {
+            return false
+        }
         if (
             this.halfedgeExistsBetweenNodes(h0.node, h1.opposite.node) ||
             this.halfedgeExistsBetweenNodes(h1.node, h0.opposite.node)
@@ -546,7 +568,9 @@ export class SurfaceEditor extends SurfaceBuilder {
     }
 
     canMergeNodes(h0: Halfedge, h1: Halfedge) {
-        if (h0.node === h1.node) return true
+        if (h0.node === h1.node) {
+            return true
+        }
 
         return (
             this.orbitsAreCompatible(h0, h1) && this.orbitsAreCompatible(h1, h0)
@@ -570,10 +594,10 @@ export class SurfaceEditor extends SurfaceBuilder {
             // Number of potential opposites half_edges
             // (should not be greater than 1)
             let nb_common = 0
-            let hh0 = cir_h0.opposite
+            const hh0 = cir_h0.opposite
             let cir_h1 = h1
             do {
-                let hh1 = cir_h1.opposite
+                const hh1 = cir_h1.opposite
                 if (
                     hh0.node === hh1.node ||
                     (hh0.node === h0.opposite.node &&
@@ -620,16 +644,16 @@ export class SurfaceEditor extends SurfaceBuilder {
             return false
         }
 
-        let h1 = h0.opposite
-        let v0 = h0.node
-        let v1 = h1.node
-        let v0_on_border = v0.isOnBorder
-        let v1_on_border = v1.isOnBorder
+        const h1 = h0.opposite
+        const v0 = h0.node
+        const v1 = h1.node
+        const v0_on_border = v0.isOnBorder
+        const v1_on_border = v1.isOnBorder
 
         console.assert(!check || v0_on_border || v1_on_border)
 
-        let n0 = this.newEdge()
-        let n1 = n0.opposite
+        const n0 = this.newEdge()
+        const n1 = n0.opposite
 
         this.link(h0, n0, 2)
         this.link(h1, n1, 2)
@@ -693,27 +717,31 @@ export class SurfaceEditor extends SurfaceBuilder {
         })
 
         this.surface_.halfedges.forEach((h) => {
-            if (h.isBorder && h.node === h.opposite.node) this.flipNormal(h)
+            if (h.isBorder && h.node === h.opposite.node) {
+                this.flipNormal(h)
+            }
         })
     }
 
     flipNormal(first: Halfedge) {
         console.assert(this.is_modified_)
 
-        if (first === undefined) return
+        if (first === undefined) {
+            return
+        }
 
-        let last = first
+        const last = first
         let prev = first
-        let start = first
+        const start = first
         first = first.next
         let new_v = start.node
 
         while (first !== last) {
-            let tmp_v = first.node
+            const tmp_v = first.node
             this.setHalfedgeNode(first, new_v)
             this.setNodeHalfedge(first.node, first)
             new_v = tmp_v
-            let next = first.next
+            const next = first.next
             this.setHalfedgeNext(first, prev)
             this.setHalfedgePrev(first, next)
             prev = first
@@ -721,7 +749,7 @@ export class SurfaceEditor extends SurfaceBuilder {
         }
         this.setHalfedgeNode(start, new_v)
         this.setNodeHalfedge(start.node, start)
-        let next = start.next
+        const next = start.next
         this.setHalfedgeNext(start, prev)
         this.setHalfedgePrev(start, next)
     }

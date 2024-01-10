@@ -67,7 +67,7 @@ export class Stack<T> {
 
     toString() {
         let str = ''
-        for (var i = 0; i < this.items.length; i++) {
+        for (let i = 0; i < this.items.length; i++) {
             str += this.items[i] + ' '
         }
         return str

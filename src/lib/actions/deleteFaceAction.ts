@@ -1,4 +1,4 @@
-import { BufferGeometry, Mesh, Vector3 } from 'three'
+import { BufferGeometry, Mesh } from 'three'
 import { splice, TypedArray, cloneArray } from '../utils/arrayUtils'
 import { Action } from './Action'
 
@@ -22,7 +22,7 @@ export function executeDeleteFace(
         return new DeleteFaceAction(mesh, id)
     }
 
-    const geom = mesh.geometry as BufferGeometry
+    const geom = mesh.geometry
     const array = cloneArray(geom.index.array)
     const newArray = splice(array, 3 * id, 3)
     geom.index.copyArray(newArray)
@@ -46,7 +46,7 @@ export class DeleteFaceAction implements Action {
         private obj: Mesh,
         private id: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
 
         const index = this.geom.index
         const oldArray = cloneArray(index.array)

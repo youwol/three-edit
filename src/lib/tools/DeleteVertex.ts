@@ -1,6 +1,4 @@
 import {
-    BufferAttribute,
-    BufferGeometry,
     Camera,
     EventDispatcher,
     Mesh,
@@ -18,8 +16,7 @@ import { Tool, ToolParameters } from './Tool'
 import { Controler } from '../controlers'
 import { ActionStack } from '../actions/ActionStack'
 import { getSize } from '../utils/getSize'
-import { RenderFunction } from '@youwol/three-extra'
-import { createCircleSprite } from '@youwol/three-extra'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
 ToolFactory.register(
     'deleteVertex',
@@ -184,8 +181,7 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
 
     private track(e: MouseEvent) {
         this.raycaster.setFromCamera(this.mouse, this.camera)
-        const pos = (this.mesh.geometry as BufferGeometry).attributes
-            .position as BufferAttribute
+        const pos = this.mesh.geometry.attributes.position
 
         const intersect = this.findIndex()
         if (intersect && intersect.index !== -1) {
@@ -212,15 +208,9 @@ export class DeleteVertexTool extends EventDispatcher implements Tool {
 
         const inter = intersects[0]
         const index = inter.index
-        const x = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getX(index)
-        const y = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getY(index)
-        const z = (
-            this.mesh.geometry as BufferGeometry
-        ).attributes.position.getZ(index)
+        const x = this.mesh.geometry.attributes.position.getX(index)
+        const y = this.mesh.geometry.attributes.position.getY(index)
+        const z = this.mesh.geometry.attributes.position.getZ(index)
         //console.log(index, x, y, z)
         this.currentIndex = index
         this.setPlane(inter.point)

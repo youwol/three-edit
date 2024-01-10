@@ -63,12 +63,13 @@ export class HalfedgeAPI {
         }
 
         // find the node
-        if (id < 0 || id > this.editor.surface().nbNodes)
+        if (id < 0 || id > this.editor.surface().nbNodes) {
             throw new Error(
                 `vertex index (${id}) out of bounds (${
                     this.editor.surface().nbNodes
                 })`,
             )
+        }
         const v = this.editor.surface().node(id)
         this.editor.eraseNode(v)
         this.notify('eraseNode')
@@ -80,12 +81,13 @@ export class HalfedgeAPI {
         }
 
         // find the node
-        if (id < 0 || id > this.editor.surface().nbFacets)
+        if (id < 0 || id > this.editor.surface().nbFacets) {
             throw new Error(
                 `triangle index (${id}) out of bounds (${
                     this.editor.surface().nbFacets
                 })`,
             )
+        }
         const f = this.editor.surface().facet(id)
         this.editor.eraseFacet(f)
         this.notify('eraseFacet')

@@ -58,7 +58,7 @@ export class DeleteVertexAction implements Action {
         private obj: Mesh,
         private id: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
 
         const index = this.geom.index
         const oldArray: number[] = Array.from(index.array)

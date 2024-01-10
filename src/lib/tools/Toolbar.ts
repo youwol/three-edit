@@ -137,7 +137,9 @@ export class Toolbar {
                             break
                         }
                         case 'Escape':
-                            if (this.tool) this.detachTool()
+                            if (this.tool) {
+                                this.detachTool()
+                            }
                             break
                     }
                 },
@@ -224,7 +226,9 @@ export class Toolbar {
             }
             this.detachObject()
             this.tool.dispose()
-            if (this.tool instanceof Object3D) this.scene.remove(this.tool)
+            if (this.tool instanceof Object3D) {
+                this.scene.remove(this.tool)
+            }
             this.tool = undefined
         }
         this.renderFunctions.render()

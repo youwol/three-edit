@@ -15,7 +15,7 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three'
-import { RenderFunction } from '@youwol/three-extra'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
 import { Action, FlipEdgeAction } from '../actions'
 import { ToolFactory } from './factory'
@@ -23,7 +23,6 @@ import { Tool, ToolParameters } from './Tool'
 import { Controler } from '../controlers'
 import { ActionStack } from '../actions/ActionStack'
 import { getSize } from '../utils/getSize'
-import { createCircleSprite } from '@youwol/three-extra'
 import { getAdjacentFaces } from '../utils/topology'
 
 ToolFactory.register(
@@ -56,8 +55,8 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
     currentFaceIndex2 = -1
     line: Line = undefined
 
-    v1: number = -1
-    v2: number = -1
+    v1 = -1
+    v2 = -1
 
     // DEBUG
     marker = []
@@ -225,10 +224,8 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             this.currentFaceIndex1 = intersect.faceIndex
 
             const face = intersect.face
-            const linePosition = (this.line.geometry as BufferGeometry)
-                .attributes.position as BufferAttribute
-            const meshPosition = (this.mesh.geometry as BufferGeometry)
-                .attributes.position as BufferAttribute
+            const linePosition = this.line.geometry.attributes.position
+            const meshPosition = this.mesh.geometry.attributes.position
 
             const p = intersect.point
 

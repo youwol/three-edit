@@ -200,10 +200,8 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
             this.currentFaceIndex = intersect.faceIndex
 
             const face = intersect.face
-            const linePosition = (this.line.geometry as BufferGeometry)
-                .attributes.position as BufferAttribute
-            const meshPosition = (this.mesh.geometry as BufferGeometry)
-                .attributes.position as BufferAttribute
+            const linePosition = this.line.geometry.attributes.position
+            const meshPosition = this.mesh.geometry.attributes.position
             linePosition.copyAt(0, meshPosition, face.a)
             linePosition.copyAt(1, meshPosition, face.b)
             linePosition.copyAt(2, meshPosition, face.c)

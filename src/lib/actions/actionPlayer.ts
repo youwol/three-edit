@@ -1,6 +1,5 @@
 import { Mesh } from 'three'
 import {
-    Action,
     ActionStack,
     executeDeleteFace,
     executeDeleteVertex,
@@ -58,7 +57,9 @@ export function play({
             )
         }
         const fct = map.get(actionParams.name)
-        if (display) console.log('Doing action:', actionParams)
+        if (display) {
+            console.log('Doing action:', actionParams)
+        }
         const a = fct(mesh, actionParams, isAction)
         if (typeof a !== 'boolean') {
             actionStack.do(a)

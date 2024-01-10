@@ -13,11 +13,19 @@ export function getAdjacentFaces(
         const I = array[i] // vertex 1
         const J = array[i + 1] // vertex 2
         const K = array[i + 2] // vertex 3
-        if (I === J || I === K || J === K) continue // grrrr, sometime topology is bad
+        if (I === J || I === K || J === K) {
+            continue
+        } // grrrr, sometime topology is bad
         const contains = (I) => I === v1 || I === v2
-        if (contains(I) && contains(J)) faces.push(i)
-        if (contains(J) && contains(K)) faces.push(i)
-        if (contains(K) && contains(I)) faces.push(i)
+        if (contains(I) && contains(J)) {
+            faces.push(i)
+        }
+        if (contains(J) && contains(K)) {
+            faces.push(i)
+        }
+        if (contains(K) && contains(I)) {
+            faces.push(i)
+        }
     }
 
     return faces

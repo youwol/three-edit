@@ -48,7 +48,7 @@ export class FlipEdgeAction implements Action {
         private v1: number,
         private v2: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
         const array = this.geom.index.array
 
         const faces = getAdjacentFaces(this.geom.index, v1, v2)
@@ -133,18 +133,24 @@ export class FlipEdgeAction implements Action {
 
     private haveToSwap(t: Tri, v1: number, v2: number) {
         if (t.i1 === v1) {
-            if (t.i2 !== v2) return true
+            if (t.i2 !== v2) {
+                return true
+            }
         } else if (t.i2 === v1) {
-            if (t.i3 !== v2) return true
+            if (t.i3 !== v2) {
+                return true
+            }
         } else {
-            if (t.i1 !== v2) return true
+            if (t.i1 !== v2) {
+                return true
+            }
         }
         return false
     }
 }
 
 class Tri {
-    private v_: number = -1
+    private v_ = -1
 
     // Assume triangle
     constructor(

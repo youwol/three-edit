@@ -40,7 +40,7 @@ export class SnapVertexAction implements Action {
         private id: number,
         private to: Vector3,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
         const x = this.geom.attributes.position.getX(this.id)
         const y = this.geom.attributes.position.getY(this.id)
         const z = this.geom.attributes.position.getZ(this.id)

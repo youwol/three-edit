@@ -1,5 +1,4 @@
-import { BufferGeometry, BufferAttribute, Mesh } from 'three'
-import { newArray } from '..'
+import { BufferGeometry, Mesh } from 'three'
 import { getAdjacentFaces } from '../utils/topology'
 import { Action } from './Action'
 
@@ -27,7 +26,7 @@ export class UnzipAction implements Action {
         v1: number,
         v2: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
 
         const faces = getAdjacentFaces(this.geom.index, v1, v2)
         if (faces.length !== 2) {

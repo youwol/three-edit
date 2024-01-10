@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Matrix4, Mesh, Vector3 } from 'three'
+import { BufferAttribute, BufferGeometry, Mesh } from 'three'
 import { cloneArray, TypedArray } from '..'
 import { HalfedgeAPI, nodesAroundNode, Node } from '../he'
 //import { splice, cloneArray, TypedArray } from '../utils/arrayUtils'
@@ -45,7 +45,7 @@ export class LaplacianSmoothAction implements Action {
         private iter: number = 10,
         private damp: number,
     ) {
-        this.geom = obj.geometry as BufferGeometry
+        this.geom = obj.geometry
         this.oldPos = cloneArray(this.geom.attributes.position.array)
         this.newPos = smooth(obj, iter, damp)
     }
@@ -87,7 +87,9 @@ function smooth(mesh: Mesh, iter: number, damp: number): TypedArray | number[] {
     he.surface.forEachNode((node) => oneRing.push(nodesAroundNode(node)))
 
     const count = mesh.geometry.attributes.position.count
-    for (let j = 0; j < count; ++j) nodes.push(he.surface.node(j))
+    for (let j = 0; j < count; ++j) {
+        nodes.push(he.surface.node(j))
+    }
 
     for (let i = 0; i < iter; ++i) {
         for (let j = 0; j < count; ++j) {

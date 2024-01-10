@@ -209,7 +209,9 @@ class TransformControls extends Object3D {
     }
 
     pointerHover(pointer) {
-        if (this.object === undefined || this.dragging === true) return
+        if (this.object === undefined || this.dragging === true) {
+            return
+        }
 
         _raycaster.setFromCamera(pointer, this.camera)
 
@@ -230,8 +232,9 @@ class TransformControls extends Object3D {
             this.object === undefined ||
             this.dragging === true ||
             pointer.button !== 0
-        )
+        ) {
             return
+        }
 
         if (this.axis !== null) {
             _raycaster.setFromCamera(pointer, this.camera)
@@ -258,15 +261,18 @@ class TransformControls extends Object3D {
                 if (space === 'local' && this.mode === 'rotate') {
                     const snap = this.rotationSnap
 
-                    if (this.axis === 'X' && snap)
+                    if (this.axis === 'X' && snap) {
                         this.object.rotation.x =
                             Math.round(this.object.rotation.x / snap) * snap
-                    if (this.axis === 'Y' && snap)
+                    }
+                    if (this.axis === 'Y' && snap) {
                         this.object.rotation.y =
                             Math.round(this.object.rotation.y / snap) * snap
-                    if (this.axis === 'Z' && snap)
+                    }
+                    if (this.axis === 'Z' && snap) {
                         this.object.rotation.z =
                             Math.round(this.object.rotation.z / snap) * snap
+                    }
                 }
 
                 this.object.updateMatrixWorld()
@@ -310,8 +316,9 @@ class TransformControls extends Object3D {
             axis === null ||
             this.dragging === false ||
             pointer.button !== -1
-        )
+        ) {
             return
+        }
 
         _raycaster.setFromCamera(pointer, this.camera)
 
@@ -321,7 +328,9 @@ class TransformControls extends Object3D {
             true,
         )
 
-        if (!planeIntersect) return
+        if (!planeIntersect) {
+            return
+        }
 
         this.pointEnd.copy(planeIntersect.point).sub(this.worldPositionStart)
 
@@ -334,9 +343,15 @@ class TransformControls extends Object3D {
                 this._offset.applyQuaternion(this._worldQuaternionInv)
             }
 
-            if (axis.indexOf('X') === -1) this._offset.x = 0
-            if (axis.indexOf('Y') === -1) this._offset.y = 0
-            if (axis.indexOf('Z') === -1) this._offset.z = 0
+            if (axis.indexOf('X') === -1) {
+                this._offset.x = 0
+            }
+            if (axis.indexOf('Y') === -1) {
+                this._offset.y = 0
+            }
+            if (axis.indexOf('Z') === -1) {
+                this._offset.z = 0
+            }
 
             if (space === 'local' && axis !== 'XYZ') {
                 this._offset
@@ -425,7 +440,9 @@ class TransformControls extends Object3D {
             if (axis.search('XYZ') !== -1) {
                 let d = this.pointEnd.length() / this.pointStart.length()
 
-                if (this.pointEnd.dot(this.pointStart) < 0) d *= -1
+                if (this.pointEnd.dot(this.pointStart) < 0) {
+                    d *= -1
+                }
 
                 _tempVector2.set(d, d, d)
             } else {
@@ -515,10 +532,11 @@ class TransformControls extends Object3D {
 
             // Apply rotation snap
 
-            if (this.rotationSnap)
+            if (this.rotationSnap) {
                 this.rotationAngle =
                     Math.round(this.rotationAngle / this.rotationSnap) *
                     this.rotationSnap
+            }
 
             // Apply rotate
             if (space === 'local' && axis !== 'E' && axis !== 'XYZE') {
@@ -548,7 +566,9 @@ class TransformControls extends Object3D {
     }
 
     pointerUp(pointer) {
-        if (pointer.button !== 0) return
+        if (pointer.button !== 0) {
+            return
+        }
 
         if (this.dragging && this.axis !== null) {
             _mouseUpEvent.mode = this.mode
@@ -572,8 +592,12 @@ class TransformControls extends Object3D {
         )
 
         this.traverse(function (child) {
-            if (child.geometry) child.geometry.dispose()
-            if (child.material) child.material.dispose()
+            if (child.geometry) {
+                child.geometry.dispose()
+            }
+            if (child.material) {
+                child.material.dispose()
+            }
         })
     }
 
@@ -656,7 +680,9 @@ function getPointer(event) {
 }
 
 function onPointerHover(event) {
-    if (!this.enabled) return
+    if (!this.enabled) {
+        return
+    }
 
     switch (event.pointerType) {
         case 'mouse':
@@ -667,7 +693,9 @@ function onPointerHover(event) {
 }
 
 function onPointerDown(event) {
-    if (!this.enabled) return
+    if (!this.enabled) {
+        return
+    }
 
     this.domElement.style.touchAction = 'none' // disable touch scroll
     this.domElement.ownerDocument.addEventListener(
@@ -680,13 +708,17 @@ function onPointerDown(event) {
 }
 
 function onPointerMove(event) {
-    if (!this.enabled) return
+    if (!this.enabled) {
+        return
+    }
 
     this.pointerMove(this._getPointer(event))
 }
 
 function onPointerUp(event) {
-    if (!this.enabled) return
+    if (!this.enabled) {
+        return
+    }
 
     this.domElement.style.touchAction = ''
     this.domElement.ownerDocument.removeEventListener(
@@ -1980,7 +2012,9 @@ class TransformControlsPlane extends Mesh {
 
         this.position.copy(this.worldPosition)
 
-        if (this.mode === 'scale') space = 'local' // scale always oriented to local rotation
+        if (this.mode === 'scale') {
+            space = 'local'
+        } // scale always oriented to local rotation
 
         _v1.copy(_unitX).applyQuaternion(
             space === 'local' ? this.worldQuaternion : _identityQuaternion,
