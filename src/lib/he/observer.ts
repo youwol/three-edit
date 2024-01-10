@@ -1,4 +1,3 @@
-
 // TODO: remove this class
 /**
  * @category Halfedge
@@ -15,7 +14,7 @@ export class CombelObserver<COMBEL> {
  */
 export class CombelObservable<COMBEL> {
     private list_: Array<CombelObserver<COMBEL>> = []
-  
+
     registerObserver(c: CombelObserver<COMBEL>) {
         this.list_.push(c)
     }
@@ -24,8 +23,8 @@ export class CombelObservable<COMBEL> {
         if (index > -1) {
             this.list_.splice(index, 1)
         }
-	}
+    }
     notifyRemove(c: COMBEL) {
-        this.list_.forEach( item => item.notifiedRemove(c))
+        this.list_.forEach((item) => item.notifiedRemove(c))
     }
 }

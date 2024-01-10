@@ -6,7 +6,11 @@ const _name_ = 'DeleteVertex'
 /**
  * @see serialize
  */
- export function executeDeleteVertex(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
+export function executeDeleteVertex(
+    mesh: Mesh,
+    json: any,
+    isAction: boolean,
+): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
@@ -17,13 +21,19 @@ const _name_ = 'DeleteVertex'
         return new DeleteVertexAction(mesh, id)
     }
 
-    const geom  = mesh.geometry
+    const geom = mesh.geometry
     const oldArray = geom.index.array
     const array: number[] = []
 
-    for (let i=0; i<oldArray.length; i+=3) {
-        if ( !(oldArray[i] === id || oldArray[i+1] === id || oldArray[i+2] === id) ) {
-            array.push(oldArray[i], oldArray[i+1], oldArray[i+2])
+    for (let i = 0; i < oldArray.length; i += 3) {
+        if (
+            !(
+                oldArray[i] === id ||
+                oldArray[i + 1] === id ||
+                oldArray[i + 2] === id
+            )
+        ) {
+            array.push(oldArray[i], oldArray[i + 1], oldArray[i + 2])
         }
     }
     geom.index.copyArray(array)
@@ -35,26 +45,32 @@ const _name_ = 'DeleteVertex'
     geom.attributes.position.needsUpdate = true
     geom.computeBoundingBox()
     geom.computeBoundingSphere()
-    
+
     return true
 }
 
 export class DeleteVertexAction implements Action {
-    geom    : BufferGeometry  = undefined
+    geom: BufferGeometry = undefined
     oldArray: number[] = []
     newArray: number[] = []
 
-    constructor(private obj: Mesh, private id: number) {
+    constructor(
+        private obj: Mesh,
+        private id: number,
+    ) {
         this.geom = obj.geometry as BufferGeometry
 
         const index = this.geom.index
         const oldArray: number[] = Array.from(index.array)
         const newArray: Array<number> = []
-        for (let i=0; i<oldArray.length; i+=3) {
-            if (oldArray[i] === this.id || oldArray[i+1] === this.id || oldArray[i+2] === this.id) {
-            }
-            else {
-                newArray.push(oldArray[i], oldArray[i+1], oldArray[i+2])
+        for (let i = 0; i < oldArray.length; i += 3) {
+            if (
+                oldArray[i] === this.id ||
+                oldArray[i + 1] === this.id ||
+                oldArray[i + 2] === this.id
+            ) {
+            } else {
+                newArray.push(oldArray[i], oldArray[i + 1], oldArray[i + 2])
             }
         }
         this.oldArray = oldArray
@@ -68,7 +84,7 @@ export class DeleteVertexAction implements Action {
     serialize() {
         return {
             name: _name_,
-            nodeID: this.id
+            nodeID: this.id,
         }
     }
 
@@ -80,7 +96,7 @@ export class DeleteVertexAction implements Action {
         this.geom.computeBoundingBox()
         this.geom.computeBoundingSphere()
     }
-    
+
     undo() {
         this.geom.index.copyArray(this.oldArray)
         this.geom.index.needsUpdate = true

@@ -1,55 +1,71 @@
-import { 
-    Camera, EventDispatcher, 
-    Matrix4, Mesh, Plane, Raycaster, Scene, 
-    Vector2, Vector3, WebGLRenderer
-} from "three"
-import { ActionStack } from "../actions/ActionStack"
-import { Controler } from "../controlers"
+import {
+    Camera,
+    EventDispatcher,
+    Matrix4,
+    Mesh,
+    Plane,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+} from 'three'
+import { ActionStack } from '../actions/ActionStack'
+import { Controler } from '../controlers'
 import { ToolFactory } from './factory'
-import { Tool, ToolParameters } from "./Tool"
+import { Tool, ToolParameters } from './Tool'
 import { MoveObjectAction } from '../actions'
-import { RenderFunction } from "@youwol/three-extra"
+import { RenderFunction } from '@youwol/three-extra'
 
-ToolFactory.register('moveObject', (params: ToolParameters) => new MoveObjectTool(params) )
+ToolFactory.register(
+    'moveObject',
+    (params: ToolParameters) => new MoveObjectTool(params),
+)
 
 // ------------------------------------------------
 
 export class MoveObjectTool extends EventDispatcher implements Tool {
-    scene       : Scene
-    camera      : Camera
-    renderer    : WebGLRenderer
-    controler   : Controler
-    renderFct   : RenderFunction
-    domElement  : HTMLElement
+    scene: Scene
+    camera: Camera
+    renderer: WebGLRenderer
+    controler: Controler
+    renderFct: RenderFunction
+    domElement: HTMLElement
 
-    raycaster       = new Raycaster
-    mouse           = new Vector2
-    intersections   = []
+    raycaster = new Raycaster()
+    mouse = new Vector2()
+    intersections = []
 
-    mesh: Mesh      = undefined
-    dragging        = false
-    plane           = new Plane
-    planeNormal     = new Vector3
-    intersectionPoint = new Vector3
-    worldPosition   = new Vector3
-    offset          = new Vector3
-    inverseMatrix   = new Matrix4
-    _enabled        = true
+    mesh: Mesh = undefined
+    dragging = false
+    plane = new Plane()
+    planeNormal = new Vector3()
+    intersectionPoint = new Vector3()
+    worldPosition = new Vector3()
+    offset = new Vector3()
+    inverseMatrix = new Matrix4()
+    _enabled = true
 
     constructor(params: ToolParameters) {
         super()
-        this.scene      = params.scene
-        this.renderer   = params.renderer
-        this.camera     = params.camera
-        this.domElement = params.domElement ? params.domElement : params.renderer.domElement
+        this.scene = params.scene
+        this.renderer = params.renderer
+        this.camera = params.camera
+        this.domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
         //this.domElement = params.renderer.domElement
-        this.renderFct  = params.renderFunctions.render
-        this.controler  = params.controler
+        this.renderFct = params.renderFunctions.render
+        this.controler = params.controler
         this.activate()
     }
 
-    get enabled() {return this._enabled}
-    set enabled(b: boolean) {this._enabled = b}
+    get enabled() {
+        return this._enabled
+    }
+    set enabled(b: boolean) {
+        this._enabled = b
+    }
 
     private activate() {
         const dom = this.domElement
@@ -63,7 +79,7 @@ export class MoveObjectTool extends EventDispatcher implements Tool {
         const dom = this.domElement
         dom.removeEventListener('mousemove', this.onMouseMove, false)
         dom.removeEventListener('mousedown', this.onMouseDown, false)
-        dom.removeEventListener('mouseup'  , this.onMouseUp  , false)
+        dom.removeEventListener('mouseup', this.onMouseUp, false)
         this.controler.enabled = true
         dom.style.cursor = ''
     }
@@ -82,7 +98,7 @@ export class MoveObjectTool extends EventDispatcher implements Tool {
         if (this.mesh) {
             const u = this.mesh.position.clone()
             if (u.length() !== 0) {
-                this.mesh.position.set(0,0,0)
+                this.mesh.position.set(0, 0, 0)
                 stack.do(new MoveObjectAction(this.mesh, u))
             }
         }
@@ -90,10 +106,10 @@ export class MoveObjectTool extends EventDispatcher implements Tool {
 
     onMouseDown = (e: MouseEvent) => {
         console.log('down')
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
-        this.raycaster.setFromCamera( this.mouse, this.camera )
-        this.raycaster.intersectObject( this.mesh, false, this.intersections)
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+        this.raycaster.setFromCamera(this.mouse, this.camera)
+        this.raycaster.intersectObject(this.mesh, false, this.intersections)
 
         if (this.intersections.length > 0) {
             this.mesh = this.intersections[0].object
@@ -103,17 +119,21 @@ export class MoveObjectTool extends EventDispatcher implements Tool {
 
             this.plane.setFromNormalAndCoplanarPoint(
                 this.camera.getWorldDirection(this.plane.normal),
-                this.worldPosition.setFromMatrixPosition(this.mesh.matrixWorld)
+                this.worldPosition.setFromMatrixPosition(this.mesh.matrixWorld),
             )
 
-            if (this.raycaster.ray.intersectPlane(this.plane, this.intersectionPoint)) {
+            if (
+                this.raycaster.ray.intersectPlane(
+                    this.plane,
+                    this.intersectionPoint,
+                )
+            ) {
                 this.inverseMatrix.copy(this.mesh.parent.matrixWorld).invert()
                 //this.worldPosition.setFromMatrixPosition(this.mesh.matrixWorld)
                 this.offset.copy(this.intersectionPoint).sub(this.worldPosition)
                 this.domElement.style.cursor = 'move'
-			}
-        }
-        else {
+            }
+        } else {
             this.dragging = false
             this.controler.enabled = true
             this.domElement.style.cursor = ''
@@ -122,16 +142,23 @@ export class MoveObjectTool extends EventDispatcher implements Tool {
 
     onMouseMove = (e: MouseEvent) => {
         const rect = this.domElement.getBoundingClientRect()
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
 
-        this.raycaster.setFromCamera( this.mouse, this.camera )
+        this.raycaster.setFromCamera(this.mouse, this.camera)
         //this.raycaster.intersectObject(this.mesh, true, this.intersections)
-        if (this.mesh && this.enabled ) {
-            if (this.raycaster.ray.intersectPlane(this.plane, this.intersectionPoint)) {
-                const du = this.intersectionPoint.sub(this.offset).applyMatrix4(this.inverseMatrix)
+        if (this.mesh && this.enabled) {
+            if (
+                this.raycaster.ray.intersectPlane(
+                    this.plane,
+                    this.intersectionPoint,
+                )
+            ) {
+                const du = this.intersectionPoint
+                    .sub(this.offset)
+                    .applyMatrix4(this.inverseMatrix)
                 this.mesh.position.copy(du)
-			}
+            }
         }
     }
 

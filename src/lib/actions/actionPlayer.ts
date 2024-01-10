@@ -2,24 +2,23 @@ import { Mesh } from 'three'
 import {
     Action,
     ActionStack,
-    executeDeleteFace, 
-    executeDeleteVertex, 
-    executeFlipEdge, 
-    executeMatrixTransformObject, 
-    executeMoveObject, 
-    executeMoveVertex, 
-    executeSnapVertex
+    executeDeleteFace,
+    executeDeleteVertex,
+    executeFlipEdge,
+    executeMatrixTransformObject,
+    executeMoveObject,
+    executeMoveVertex,
+    executeSnapVertex,
 } from '.'
 
-
 const map = new Map<string, Function>()
-map.set('DeleteFace',               executeDeleteFace)
-map.set('DeleteVertex',             executeDeleteVertex)
-map.set('FlipEdge',                 executeFlipEdge)
-map.set('MatrixTransformObject',    executeMatrixTransformObject)
-map.set('MoveObject',               executeMoveObject)
-map.set('MoveVertex',               executeMoveVertex)
-map.set('SnapVertex',               executeSnapVertex)
+map.set('DeleteFace', executeDeleteFace)
+map.set('DeleteVertex', executeDeleteVertex)
+map.set('FlipEdge', executeFlipEdge)
+map.set('MatrixTransformObject', executeMatrixTransformObject)
+map.set('MoveObject', executeMoveObject)
+map.set('MoveVertex', executeMoveVertex)
+map.set('SnapVertex', executeSnapVertex)
 
 /**
  * ```json
@@ -38,17 +37,28 @@ map.set('SnapVertex',               executeSnapVertex)
  * ```
  * @see [[ActionRecoder]]
  */
-export function play(
-    {mesh, json, display=true, isAction=false, actionStack}:
-    {mesh: Mesh, json: string, display?: boolean, isAction?:boolean, actionStack?: ActionStack}
-) {
+export function play({
+    mesh,
+    json,
+    display = true,
+    isAction = false,
+    actionStack,
+}: {
+    mesh: Mesh
+    json: string
+    display?: boolean
+    isAction?: boolean
+    actionStack?: ActionStack
+}) {
     const actions = JSON.parse(json)
-    actions.forEach( actionParams => {
+    actions.forEach((actionParams) => {
         if (map.has(actionParams.name) === false) {
-            throw new Error(`Cannot play series of actions, unknown action ${actionParams}`)
+            throw new Error(
+                `Cannot play series of actions, unknown action ${actionParams}`,
+            )
         }
         const fct = map.get(actionParams.name)
-        if (display) console.log('Doing action:',actionParams)
+        if (display) console.log('Doing action:', actionParams)
         const a = fct(mesh, actionParams, isAction)
         if (typeof a !== 'boolean') {
             actionStack.do(a)

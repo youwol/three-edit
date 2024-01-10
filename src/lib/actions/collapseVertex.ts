@@ -8,7 +8,11 @@ const _name_ = 'CollapseVertex'
 /**
  * @see serialize
  */
- export function executeCollapseVertex(mesh: Mesh, json: any, isAction: boolean): Action | boolean {
+export function executeCollapseVertex(
+    mesh: Mesh,
+    json: any,
+    isAction: boolean,
+): Action | boolean {
     if (json.name !== _name_) {
         return false
     }
@@ -22,34 +26,37 @@ const _name_ = 'CollapseVertex'
     const he = new HalfedgeAPI(mesh)
     he.collapseVertex(id)
 
-    mesh.geometry.index.set( he.index )
-    mesh.geometry.attributes.position.set( he.position )
+    mesh.geometry.index.set(he.index)
+    mesh.geometry.attributes.position.set(he.position)
 
     mesh.geometry.index.needsUpdate = true
     mesh.geometry.attributes.position.needsUpdate = true
     mesh.geometry.computeBoundingBox()
     mesh.geometry.computeBoundingSphere()
-    
+
     return true
 }
 
 export class CollapseVertexAction implements Action {
-    geom    : BufferGeometry  = undefined
+    geom: BufferGeometry = undefined
     oldIndex: BufferAttribute
     newIndex: BufferAttribute
-    oldPos  : BufferAttribute
-    newPos  : BufferAttribute
+    oldPos: BufferAttribute
+    newPos: BufferAttribute
 
-    constructor(private obj: Mesh, private id: number) {
+    constructor(
+        private obj: Mesh,
+        private id: number,
+    ) {
         this.geom = obj.geometry as BufferGeometry
 
         this.oldIndex = this.geom.index.array
         this.oldPos = this.geom.attributes.position.array
-        
+
         // Modify obj here
         const he = new HalfedgeAPI(obj)
         he.collapseVertex(id)
-        
+
         this.newIndex = he.index
         this.newPos = he.position
     }
@@ -61,7 +68,7 @@ export class CollapseVertexAction implements Action {
     serialize() {
         return {
             name: _name_,
-            nodeID: this.id
+            nodeID: this.id,
         }
     }
 
@@ -74,7 +81,7 @@ export class CollapseVertexAction implements Action {
         this.geom.computeBoundingBox()
         this.geom.computeBoundingSphere()
     }
-    
+
     undo() {
         this.geom.index.copyArray(this.oldIndex)
         this.geom.attributes.position.copyArray(this.oldPos)

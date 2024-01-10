@@ -1,41 +1,40 @@
-import { 
-    Camera, EventDispatcher, 
-    Mesh, Scene, 
-    WebGLRenderer
-} from "three"
-import { ActionStack } from "../actions/ActionStack"
-import { Controler } from "../controlers"
+import { Camera, EventDispatcher, Mesh, Scene, WebGLRenderer } from 'three'
+import { ActionStack } from '../actions/ActionStack'
+import { Controler } from '../controlers'
 import { ToolFactory } from './factory'
-import { Tool, ToolParameters } from "./Tool"
+import { Tool, ToolParameters } from './Tool'
 import { RelaxAction } from '../actions'
-import { RenderFunction } from "@youwol/three-extra"
+import { RenderFunction } from '@youwol/three-extra'
 
-ToolFactory.register('relax', (params: ToolParameters) => new Relax(params) )
+ToolFactory.register('relax', (params: ToolParameters) => new Relax(params))
 
 export class Relax extends EventDispatcher implements Tool {
-	stack: ActionStack = undefined
-	_enabled = true
-	controler : Controler = undefined
+    stack: ActionStack = undefined
+    _enabled = true
+    controler: Controler = undefined
 
     constructor(params: ToolParameters) {
         super()
-		this.stack     = params.actionStack
-		this.controler = params.controler
+        this.stack = params.actionStack
+        this.controler = params.controler
     }
 
-    get enabled() {return this._enabled}
-    set enabled(b: boolean) {this._enabled = b}
+    get enabled() {
+        return this._enabled
+    }
+    set enabled(b: boolean) {
+        this._enabled = b
+    }
 
     dispose() {
         this.controler.enabled = true
     }
 
     attachObject(mesh: Mesh) {
-		this.stack.do( new RelaxAction(mesh, 1) )
+        this.stack.do(new RelaxAction(mesh, 1))
     }
 
     detachObject() {
         this.controler.enabled = true
     }
-
 }

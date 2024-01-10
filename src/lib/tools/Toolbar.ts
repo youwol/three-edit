@@ -1,58 +1,55 @@
-import { Camera, Object3D, Scene, WebGLRenderer } from "three"
-import { ActionStack } from "../actions/ActionStack"
-import { Controler } from "../controlers"
-import { Tool, ToolParameters, ToolFactory } from "."
-import { RenderFunctions } from "@youwol/three-extra"
+import { Camera, Object3D, Scene, WebGLRenderer } from 'three'
+import { ActionStack } from '../actions/ActionStack'
+import { Controler } from '../controlers'
+import { Tool, ToolParameters, ToolFactory } from '.'
+import { RenderFunctions } from '@youwol/three-extra'
 
-const onColor  = 'rgb(0,0,0)'
+const onColor = 'rgb(0,0,0)'
 const offColor = 'rgb(255,255,255)'
 
 export class ToolbarParameters {
-    public scene     : Scene          = undefined
-    public camera    : Camera         = undefined
-    public renderer  : WebGLRenderer  = undefined
-    public controler : Controler      = undefined
+    public scene: Scene = undefined
+    public camera: Camera = undefined
+    public renderer: WebGLRenderer = undefined
+    public controler: Controler = undefined
     public renderFunctions: RenderFunctions = undefined
-    public domElement: HTMLElement    = undefined
-    public actionStack  : ActionStack = undefined
-    public controlerDomName: string  = undefined
-    public undoDomName: string  = undefined
-    public redoDomName: string  = undefined
+    public domElement: HTMLElement = undefined
+    public actionStack: ActionStack = undefined
+    public controlerDomName: string = undefined
+    public undoDomName: string = undefined
+    public redoDomName: string = undefined
 
-    constructor(
-        {
-            scene = undefined, 
-            camera = undefined, 
-            renderer = undefined, 
-            controler = undefined, 
-            renderFunctions, 
-            domElement = undefined, 
-            actionStack = undefined,
-            controlerDomName = undefined,
-            undoDomName = undefined,
-            redoDomName = undefined
-        }:
-        {
-            actionStack: ActionStack,
-            scene: Scene, 
-            camera: Camera, 
-            renderer: WebGLRenderer, 
-            controler: Controler, 
-            renderFunctions: RenderFunctions, 
+    constructor({
+        scene = undefined,
+        camera = undefined,
+        renderer = undefined,
+        controler = undefined,
+        renderFunctions,
+        domElement = undefined,
+        actionStack = undefined,
+        controlerDomName = undefined,
+        undoDomName = undefined,
+        redoDomName = undefined,
+    }: {
+        actionStack: ActionStack
+        scene: Scene
+        camera: Camera
+        renderer: WebGLRenderer
+        controler: Controler
+        renderFunctions: RenderFunctions
 
-            domElement?: HTMLElement,
-            controlerDomName?: string,
-            undoDomName?: string,
-            redoDomName?: string
-        })
-    {
-        this.scene      = scene 
-        this.camera     = camera
-        this.renderer   = renderer
-        this.controler  = controler
+        domElement?: HTMLElement
+        controlerDomName?: string
+        undoDomName?: string
+        redoDomName?: string
+    }) {
+        this.scene = scene
+        this.camera = camera
+        this.renderer = renderer
+        this.controler = controler
         this.domElement = domElement
         this.renderFunctions = renderFunctions
-        this.actionStack   = actionStack
+        this.actionStack = actionStack
         this.controlerDomName = controlerDomName
         this.undoDomName = undoDomName
         this.redoDomName = redoDomName
@@ -60,14 +57,14 @@ export class ToolbarParameters {
 }
 
 export class Toolbar {
-    private elts            : Array<HTMLElement> = []
-    private tool            : Tool = undefined
-    private toolButton      : HTMLElement = undefined // current toolbutton
-    private controlerButton : HTMLElement = undefined // controler button
-    private undoButton      : HTMLElement = undefined 
-    private redoButton      : HTMLElement = undefined 
-    private object          : Object3D = undefined
-    
+    private elts: Array<HTMLElement> = []
+    private tool: Tool = undefined
+    private toolButton: HTMLElement = undefined // current toolbutton
+    private controlerButton: HTMLElement = undefined // controler button
+    private undoButton: HTMLElement = undefined
+    private redoButton: HTMLElement = undefined
+    private object: Object3D = undefined
+
     private actionStack: ActionStack = undefined
     private scene: Scene
     private camera: Camera
@@ -81,16 +78,20 @@ export class Toolbar {
     }
 
     constructor(params: ToolbarParameters) {
-        this.actionStack     = params.actionStack //new ActionStack(params.undoSize, params.renderFunctions.render)
-        this.scene           = params.scene
-        this.camera          = params.camera
-        this.domElement      = params.domElement ? params.domElement : params.renderer.domElement
-        this.controler       = params.controler
-        this.renderer        = params.renderer
+        this.actionStack = params.actionStack //new ActionStack(params.undoSize, params.renderFunctions.render)
+        this.scene = params.scene
+        this.camera = params.camera
+        this.domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
+        this.controler = params.controler
+        this.renderer = params.renderer
         this.renderFunctions = params.renderFunctions
 
         if (params.controlerDomName) {
-            this.controlerButton = document.getElementById(params.controlerDomName)
+            this.controlerButton = document.getElementById(
+                params.controlerDomName,
+            )
             if (this.controlerButton) {
                 this.controlerButton.addEventListener('click', () => {
                     this.detachTool()
@@ -119,25 +120,28 @@ export class Toolbar {
         // for keyboard binding in a generic way
         //
         if (params.domElement) {
-            params.domElement.addEventListener( 'keydown', (event: KeyboardEvent) => {
-                const isCtrl  = event.ctrlKey
-                const isShift = event.shiftKey
-                switch (event.key) {
-                    case 'Z':
-                    case 'z': {
-                        if (isCtrl && !isShift) {
-                            this.actionStack.undo()
+            params.domElement.addEventListener(
+                'keydown',
+                (event: KeyboardEvent) => {
+                    const isCtrl = event.ctrlKey
+                    const isShift = event.shiftKey
+                    switch (event.key) {
+                        case 'Z':
+                        case 'z': {
+                            if (isCtrl && !isShift) {
+                                this.actionStack.undo()
+                            }
+                            if (isCtrl && isShift) {
+                                this.actionStack.redo()
+                            }
+                            break
                         }
-                        if (isCtrl && isShift) {
-                            this.actionStack.redo()
-                        }
-                        break
+                        case 'Escape':
+                            if (this.tool) this.detachTool()
+                            break
                     }
-                    case 'Escape': 
-                        if (this.tool) this.detachTool()
-                        break
-                }
-            })
+                },
+            )
         }
 
         this.resetButton()
@@ -153,15 +157,18 @@ export class Toolbar {
                 this.toolButton = elt
                 this.highlightButton()
                 const params = new ToolParameters({
-                    scene           : this.scene, 
-                    renderer        : this.renderer,
-                    camera          : this.camera,
-                    controler       : this.controler,
-                    renderFunctions : this.renderFunctions,
-                    actionStack     : this.actionStack,
-                    domElement      : this.domElement
+                    scene: this.scene,
+                    renderer: this.renderer,
+                    camera: this.camera,
+                    controler: this.controler,
+                    renderFunctions: this.renderFunctions,
+                    actionStack: this.actionStack,
+                    domElement: this.domElement,
                 })
-                this.tool = ToolFactory.get(toolNameInFactory, new ToolParameters(params))
+                this.tool = ToolFactory.get(
+                    toolNameInFactory,
+                    new ToolParameters(params),
+                )
                 this.attachObject(this.object)
             })
 

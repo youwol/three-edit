@@ -6,11 +6,11 @@ import { ActionRecorder } from './ActionRecorder'
  */
 export class ActionStack {
     callback: Function = undefined
-    stackDo  : Array<Action>   = []
-    stackUndo: Array<Action>   = []
+    stackDo: Array<Action> = []
+    stackUndo: Array<Action> = []
     notifiers: Array<Function> = []
     maxSize_ = 10
-    recorder = new ActionRecorder
+    recorder = new ActionRecorder()
 
     constructor(maxSize = 10, callback: Function = undefined) {
         this.callback = callback
@@ -37,7 +37,7 @@ export class ActionStack {
 
     /**
      * If you want to be notified when a action is done or undone
-     * @param cb 
+     * @param cb
      */
     addNotifier(cb: Function) {
         this.notifiers.push(cb)
@@ -45,7 +45,7 @@ export class ActionStack {
 
     do(action: Action) {
         this.stackDo.push(action)
-        if (this.stackDo.length>this.maxSize_) {
+        if (this.stackDo.length > this.maxSize_) {
             this.stackDo.shift()
         }
         this.stackUndo = []
@@ -93,7 +93,7 @@ export class ActionStack {
     }
 
     private notify(msg: any) {
-        this.notifiers.forEach( cb => cb(msg) )
+        this.notifiers.forEach((cb) => cb(msg))
         if (this.callback) {
             this.callback()
         }

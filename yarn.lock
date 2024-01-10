@@ -947,6 +947,14 @@
   resolved "https://registry.yarnpkg.com/@youwol/io/-/io-0.0.20.tgz#1101293674f39f3e2a9fe28124c9f0856442d8f8"
   integrity sha512-GJvQGoY0vN65gOYe+AcV79LsupaJc5tsoeXEcomwJtgsvB+FThyAzx+dane4+YBKSbK24CyURTbbkILbghC6EA==
 
+"@youwol/prettier-config@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@youwol/prettier-config/-/prettier-config-1.0.0.tgz#f4ae9ec39793c66e5f3b7976c2da4b82e2c9ebe2"
+  integrity sha512-qlYeQf/be2Bqa/jfpu3aW2RTve7NRWC1umDH8XyDTL7ns2KE6B8VgxwQhE3L9yyRc5TZfPDATg+TvD/W32Y7oQ==
+  dependencies:
+    prettier "^3.0.3"
+    prettier-plugin-properties "^0.3.0"
+
 "@youwol/three-extra@0.x":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@youwol/three-extra/-/three-extra-0.0.6.tgz#8ad75a81a505ab054a5e18765a4468a4f726f87c"
@@ -1626,6 +1634,11 @@ domexception@^2.0.1:
   integrity sha512-yxJ2mFy/sibVQlu5qHjOkf9J3K6zgmCxgJ94u2EdvDOV09H+32LtRswEcUsmUWN72pVLOEnTSRaIVVzVQgS0dg==
   dependencies:
     webidl-conversions "^5.0.0"
+
+dot-properties@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dot-properties/-/dot-properties-1.0.1.tgz#f0b8f7bf378de3ee119ff9a2d47495ca7d19553c"
+  integrity sha512-cjIHHKlf2dPINJ5Io3lPocWvWmthXn3ztqyHVzUfufRiCiPECb0oiEqEGbEGaunFZtcMvwgUcxP9CTpLG4KCsA==
 
 electron-to-chromium@^1.4.17:
   version "1.4.35"
@@ -3539,6 +3552,18 @@ prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
+
+prettier-plugin-properties@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-properties/-/prettier-plugin-properties-0.3.0.tgz#4645b0ad9600c69e047c8e3bd8e22a96230041e8"
+  integrity sha512-j2h4NbG6hIaRx0W7CDPUH+yDbzXHmI2urPC1EC8pYrsS5R5AYgAmcSDN0oea+C5mBiN6BK0AkiSKPj0RC17NDQ==
+  dependencies:
+    dot-properties "^1.0.0"
+
+prettier@^3.0.3:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-3.1.1.tgz#6ba9f23165d690b6cbdaa88cb0807278f7019848"
+  integrity sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==
 
 pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"

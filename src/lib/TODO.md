@@ -1,11 +1,11 @@
 # Extension of this library
 
 1. Delete Face/Vertex
-While maintaining [shift] pressed, allow to delete continuously while mouse left-button is pressed
-1. Zip edges 
+   While maintaining [shift] pressed, allow to delete continuously while mouse left-button is pressed
+1. Zip edges
 1. Unzip edges
 1. Collapse vertex
-1. Fill a hole while picking an edge at the border of the hole 
+1. Fill a hole while picking an edge at the border of the hole
 
 1. FFD using perhaps [this code](https://github.com/lucasmajerowicz/threejs-ffd). So that:
     - Display the FFD lattice wih the active control points

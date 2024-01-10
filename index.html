@@ -1,262 +1,289 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Testing Kepler-edit</title>
-		<!-- <script src='/node_modules/three/build/three.min.js'></script>
+    <head>
+        <meta charset="utf-8" />
+        <title>Testing Kepler-edit</title>
+        <!-- <script src='/node_modules/three/build/three.min.js'></script>
 		<script src='/node_modules/three/examples/js/controls/TrackballControls.js'></script>
 		<script src='/node_modules/@youwol/three-extra/dist/@youwol/three-extra.js'></script>
 		<script src='/node_modules/@youwol/io/dist/@youwol/io.js'></script>
 		<script src='/dist/@youwol/three-edit.js'></script> -->
 
-		<script src='node_modules/three/build/three.min.js'></script>
-		<script src='https://rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js'></script>
-		<script src='/devs/workspace/packages/dataframe/dist/@youwol/dataframe.js'></script>
-		<script src='/devs/workspace/packages/math/dist/@youwol/math.js'></script>
-		<script src='/devs/workspace/packages/io/dist/@youwol/io.js'></script>
-		<script src='/devs/workspace/packages/three-extra/dist/@youwol/three-extra.js'></script>
-		<script src='/devs/workspace/packages/three-edit/dist/@youwol/three-edit.js'></script>
+        <script src="node_modules/three/build/three.min.js"></script>
+        <script src="https://rawgit.com/mrdoob/three.js/master/examples/js/controls/TrackballControls.js"></script>
+        <script src="/devs/workspace/packages/dataframe/dist/@youwol/dataframe.js"></script>
+        <script src="/devs/workspace/packages/math/dist/@youwol/math.js"></script>
+        <script src="/devs/workspace/packages/io/dist/@youwol/io.js"></script>
+        <script src="/devs/workspace/packages/three-extra/dist/@youwol/three-extra.js"></script>
+        <script src="/devs/workspace/packages/three-edit/dist/@youwol/three-edit.js"></script>
 
-		<script src='https://kit.fontawesome.com/daa834e337.js' crossorigin="anonymous"></script>
-	
-		<style>
-			html, body {
-				margin: 0;
-				padding: 0;
-			}
-	
-			.left-container {
-				position: absolute;
-				left: 10px;
-				top: 10px;
-				display: flex;
-				border: #000;
-				border-radius: 2px;
-				background: rgb(55, 55, 55);
-				border-style: solid;
-				opacity: 0.7;
-				z-index: 100;
-			}
-			.right-container {
-				position: absolute;
-				right: 10px;
-				top: 40px;
-				display: flex;
-			}
-			.home-container {
-				position: absolute;
-				right: 40px;
-				top: 5px;
-				display: flex;
-			}
-	
-			.buttonIcon {
-				color: #fff;
-				opacity: 0.7;
-				cursor: pointer;
-				font-size: 1.5em;
-				/* margin-right: 0.5em; */
-				margin: 0.2em 0.2em 0.2em 0.2em;
-			}
-			.buttonIcon:hover {
-				opacity: 1;	
-			}
-			.buttonIconS {
-				color: #aaa;
-				opacity: 0.7;
-				font-size: 1.5em;
-				margin: 0.2em 0.2em 0.2em 0.2em;
-			}
-	
-			.fa-clinic-medical:before {
-				content: "\f7f2";
-			}
-			
-			#orientCubeWrapper {
-				width: 130px;
-				height: 130px;
-				opacity: 0.7;
-				transition: opacity 0.3s;
-				-webkit-transition: 0.3s;
-			}
-			#orientCubeWrapper:hover {
-				opacity: 1;
-			}
-		</style>
-	</head>
+        <script
+            src="https://kit.fontawesome.com/daa834e337.js"
+            crossorigin="anonymous"
+        ></script>
 
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
 
-	<body>
-		<div class='home-container'>
-        	<div class='buttonIcon'>
-            	<div id='saveHome'><i class='fa fa-clinic-medical'></i></div>
-        	</div>
-        	<div class='buttonIcon'>
-            	<div id='goHome'><i class='fa fa-home'></i></div>
-        	</div>
-    	</div>
-    	<div class='right-container'>
-        	<div id='orientCubeWrapper'></div>
-    	</div>
-		<div class='left-container'>
-			<div class='buttonIcon'>
-				<div id='translate'><i class='fa fa-arrows'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='rotate'><i class='fa fa-sync-alt'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='scale'><i class='fa fa-expand-arrows-alt'></i></div>
-			</div>
-			<div class='buttonIconS'>
-				<div><i class='fa fa-grip-lines-vertical'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='move-vertex'><i class='fa fa-edit'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='snap-vertex'><i class='fa fa-user-edit'></i></div>
-			</div>
-			<!-- <div class='buttonIcon'>
+            .left-container {
+                position: absolute;
+                left: 10px;
+                top: 10px;
+                display: flex;
+                border: #000;
+                border-radius: 2px;
+                background: rgb(55, 55, 55);
+                border-style: solid;
+                opacity: 0.7;
+                z-index: 100;
+            }
+            .right-container {
+                position: absolute;
+                right: 10px;
+                top: 40px;
+                display: flex;
+            }
+            .home-container {
+                position: absolute;
+                right: 40px;
+                top: 5px;
+                display: flex;
+            }
+
+            .buttonIcon {
+                color: #fff;
+                opacity: 0.7;
+                cursor: pointer;
+                font-size: 1.5em;
+                /* margin-right: 0.5em; */
+                margin: 0.2em 0.2em 0.2em 0.2em;
+            }
+            .buttonIcon:hover {
+                opacity: 1;
+            }
+            .buttonIconS {
+                color: #aaa;
+                opacity: 0.7;
+                font-size: 1.5em;
+                margin: 0.2em 0.2em 0.2em 0.2em;
+            }
+
+            .fa-clinic-medical:before {
+                content: '\f7f2';
+            }
+
+            #orientCubeWrapper {
+                width: 130px;
+                height: 130px;
+                opacity: 0.7;
+                transition: opacity 0.3s;
+                -webkit-transition: 0.3s;
+            }
+            #orientCubeWrapper:hover {
+                opacity: 1;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="home-container">
+            <div class="buttonIcon">
+                <div id="saveHome"><i class="fa fa-clinic-medical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="goHome"><i class="fa fa-home"></i></div>
+            </div>
+        </div>
+        <div class="right-container">
+            <div id="orientCubeWrapper"></div>
+        </div>
+        <div class="left-container">
+            <div class="buttonIcon">
+                <div id="translate"><i class="fa fa-arrows"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="rotate"><i class="fa fa-sync-alt"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="scale"><i class="fa fa-expand-arrows-alt"></i></div>
+            </div>
+            <div class="buttonIconS">
+                <div><i class="fa fa-grip-lines-vertical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="move-vertex"><i class="fa fa-edit"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="snap-vertex"><i class="fa fa-user-edit"></i></div>
+            </div>
+            <!-- <div class='buttonIcon'>
 				<div id='collapse-vertex'><i class='fa fa-spider'></i></div>
 			</div> -->
-			<div class='buttonIcon'>
-				<div id='del-vertex'><i class='fa fa-trash-restore-alt'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='del-face'><i class='fa fa-trash-alt'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='flip-edge'><i class='fa fa-random'></i></div>
-			</div>
-			<!-- <div class='buttonIcon'>
+            <div class="buttonIcon">
+                <div id="del-vertex">
+                    <i class="fa fa-trash-restore-alt"></i>
+                </div>
+            </div>
+            <div class="buttonIcon">
+                <div id="del-face"><i class="fa fa-trash-alt"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="flip-edge"><i class="fa fa-random"></i></div>
+            </div>
+            <!-- <div class='buttonIcon'>
 				<div id='unzip'><i class='fa fa-hand-scissors'></i></div>
 			</div> -->
-			<div class='buttonIconS'>
-				<div><i class='fa fa-grip-lines-vertical'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='smooth'><i class='fa fa-couch'></i></div>
-			</div>
-			<div class='buttonIconS'>
-				<div><i class='fa fa-grip-lines-vertical'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='ruler'><i class='fa fa-ruler'></i></div>
-			</div>
-			<div class='buttonIconS'>
-				<div><i class='fa fa-grip-lines-vertical'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='controler'><i class='fa fa-globe-europe'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='undo'><i class='fa fa-undo'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='redo'><i class='fa fa-redo'></i></div>
-			</div>
-			<div class='buttonIconS'>
-				<div><i class='fa fa-grip-lines-vertical'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='dump-info'><i class='fa fa-paragraph'></i></div>
-			</div>
-			<div class='buttonIcon'>
-				<div id='vertex-info'><i class='fa fa-paragraph'></i></div>
-			</div>
-		</div>
+            <div class="buttonIconS">
+                <div><i class="fa fa-grip-lines-vertical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="smooth"><i class="fa fa-couch"></i></div>
+            </div>
+            <div class="buttonIconS">
+                <div><i class="fa fa-grip-lines-vertical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="ruler"><i class="fa fa-ruler"></i></div>
+            </div>
+            <div class="buttonIconS">
+                <div><i class="fa fa-grip-lines-vertical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="controler"><i class="fa fa-globe-europe"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="undo"><i class="fa fa-undo"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="redo"><i class="fa fa-redo"></i></div>
+            </div>
+            <div class="buttonIconS">
+                <div><i class="fa fa-grip-lines-vertical"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="dump-info"><i class="fa fa-paragraph"></i></div>
+            </div>
+            <div class="buttonIcon">
+                <div id="vertex-info"><i class="fa fa-paragraph"></i></div>
+            </div>
+        </div>
 
+        <script>
+            const three = window['THREE']
+            const threeExtra = window['@youwol/three-extra']
+            const threeEdit = window['@youwol/three-edit'] //window['@youwol/kepler-edit']
+            const io = window['@youwol/io']
+            const math = window['@youwol/math']
 
-		<script>
-			const three      = window['THREE']
-			const threeExtra = window['@youwol/three-extra']
-			const threeEdit  = window['@youwol/three-edit'] //window['@youwol/kepler-edit']
-			const io  		 = window['@youwol/io']
-			const math		 = window['@youwol/math']
+            function doOneSurface(url) {
+                const promise = fetch(url)
+                    .then((res) => {
+                        if (res.ok) return res.text()
+                        return undefined
+                    })
+                    .then((buffer) => {
+                        if (!buffer) return undefined
+                        const df = io.decodeGocadTS(buffer, {
+                            shared: false,
+                            merge: true,
+                        })[0]
+                        //console.log(df)
 
-			function doOneSurface(url) {
-				const promise = fetch(url)
-				.then( res => {
-					if ( res.ok ) return res.text()
-					return undefined
-				})
-				.then( buffer => {
-					if (! buffer) return undefined
-					const df = io.decodeGocadTS(buffer, {shared: false, merge: true})[0]
-					//console.log(df)
+                        const material = new THREE.MeshStandardMaterial({
+                            color: '#cccccc',
+                            transparent: false,
+                            side: THREE.DoubleSide,
+                            polygonOffset: true,
+                            polygonOffsetFactor: 1,
+                            flatShading: true,
+                        })
 
-					const material  = new THREE.MeshStandardMaterial({
-						color: '#cccccc', 
-						transparent: false, 
-						side: THREE.DoubleSide,
-						polygonOffset: true,
-						polygonOffsetFactor: 1,
-						flatShading: true
-					})
+                        const geometry = new THREE.BufferGeometry()
+                        console.log(math.minMax(df.series.positions))
+                        geometry.setAttribute(
+                            'position',
+                            new THREE.Float32BufferAttribute(
+                                df.series.positions.array,
+                                3,
+                            ),
+                        )
+                        geometry.setIndex(
+                            new THREE.Uint32BufferAttribute(
+                                df.series.indices.array,
+                                1,
+                            ),
+                        )
 
-					const geometry = new THREE.BufferGeometry()
-					console.log(math.minMax(df.series.positions))
-					geometry.setAttribute('position', new THREE.Float32BufferAttribute(df.series.positions.array, 3))
-					geometry.setIndex( new THREE.Uint32BufferAttribute(df.series.indices.array, 1))
+                        const material2 = new THREE.MeshStandardMaterial({
+                            color: '#000000',
+                            transparent: false,
+                            wireframe: true,
+                            polygonOffset: true,
+                            polygonOffsetFactor: 1,
+                            flatShading: false,
+                        })
 
-					const material2 = new THREE.MeshStandardMaterial({
-						color: '#000000', 
-						transparent: false,
-						wireframe: true,
-						polygonOffset: true,
-						polygonOffsetFactor: 1,
-						flatShading: false
-					})
+                        mesh = new THREE.Mesh(geometry, material) // solid object
+                        const mesh2 = new THREE.Mesh(geometry, material2) // wireframe object
+                        scene.add(mesh)
+                        mesh.add(mesh2)
+                    })
+                    .then((_) => {
+                        toolbar.attachObject(mesh)
+                        threeExtra.fitScene({
+                            scene,
+                            camera,
+                            controls: controler,
+                        })
+                    })
+            }
 
-					mesh  = new THREE.Mesh(geometry, material)  // solid object
-					const mesh2 = new THREE.Mesh(geometry, material2) // wireframe object
-					scene.add(mesh)
-					mesh.add(mesh2)
-				})
-				.then( _ => {
-					toolbar.attachObject(mesh)
-					threeExtra.fitScene({scene, camera, controls: controler})
-				})
-			}
+            const renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                alpha: false,
+            })
+            renderer.autoClear = false
+            renderer.setPixelRatio(window.devicePixelRatio)
+            renderer.setSize(window.innerWidth, window.innerHeight)
+            document.body.appendChild(renderer.domElement)
 
-			const renderer = new THREE.WebGLRenderer({
-				antialias: true,
-				alpha: false
-			})
-			renderer.autoClear = false
-			renderer.setPixelRatio(window.devicePixelRatio)
-			renderer.setSize(window.innerWidth, window.innerHeight)
-			document.body.appendChild(renderer.domElement)
+            // --------------------------------------------------
 
-			// --------------------------------------------------
+            const camera = new THREE.PerspectiveCamera(
+                50,
+                window.innerWidth / window.innerHeight,
+                1,
+                10000,
+            )
+            camera.position.set(300, 300, 300)
+            camera.lookAt(0, 100, 0)
 
-			const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 )
-			camera.position.set( 300, 300, 300 )
-			camera.lookAt( 0, 100, 0 )
+            // --------------------------------------------------
 
-			// --------------------------------------------------
+            const scene = new THREE.Scene()
+            scene.background = new THREE.Color('#888')
 
-			const scene = new THREE.Scene
-			scene.background = new THREE.Color('#888')
+            const light = new THREE.DirectionalLight(0xffffff, 1)
+            light.position.set(1, 1, 1)
+            scene.add(light)
 
-			const light = new THREE.DirectionalLight(0xffffff, 1)
-			light.position.set(1, 1, 1)
-			scene.add(light)
+            const light2 = new THREE.DirectionalLight(0xffffff, 1)
+            light2.position.set(-1, 0, -1)
+            scene.add(light2)
 
-			const light2 = new THREE.DirectionalLight(0xffffff, 1)
-			light2.position.set(-1, 0, -1)
-			scene.add(light2)
+            const light3 = new THREE.DirectionalLight(0xffffff, 1)
+            light2.position.set(1, -1, -1)
+            scene.add(light3)
 
-			const light3 = new THREE.DirectionalLight(0xffffff, 1)
-			light2.position.set(1, -1, -1)
-			scene.add(light3)
+            // doOneSurface("/data/arch/mud/Mud_Volcano_top_9421.ts")
+            // doOneSurface("/data/mesh/sphere.ts")
+            doOneSurface('/data/mesh/rectangle.ts')
 
-			// doOneSurface("/data/arch/mud/Mud_Volcano_top_9421.ts")
-			// doOneSurface("/data/mesh/sphere.ts")
-			doOneSurface("/data/mesh/rectangle.ts")
-
-			/*
+            /*
 			const material  = new THREE.MeshStandardMaterial({
 				color: '#cccccc', 
 				transparent: false, 
@@ -289,101 +316,111 @@
 			mesh.add(mesh2)
 			*/
 
-			// --------------------------------------------------
+            // --------------------------------------------------
 
-			const renderFunctions = new threeExtra.RenderFunctions({
-				scene, 
-				camera, 
-				renderer
-			})
+            const renderFunctions = new threeExtra.RenderFunctions({
+                scene,
+                camera,
+                renderer,
+            })
 
-			// --------------------------------------------------
+            // --------------------------------------------------
 
-			const controler = new three.TrackballControls(camera, renderer.domElement)
-			renderFunctions.add(controler.update)
-			controler.rotateSpeed = 5.0
-			controler.zoomSpeed = 3.2
-			controler.panSpeed = 0.5
-			controler.update()
+            const controler = new three.TrackballControls(
+                camera,
+                renderer.domElement,
+            )
+            renderFunctions.add(controler.update)
+            controler.rotateSpeed = 5.0
+            controler.zoomSpeed = 3.2
+            controler.panSpeed = 0.5
+            controler.update()
 
-			// --------------------------------------------------
+            // --------------------------------------------------
 
-			threeExtra.installNavigationCube( new threeExtra.NavigationCubeParameters({
-				scene, 
-            	camera, 
-            	renderer, 
-            	controls: controler,
-				renderFunctions,
-            	labels: ['RIGHT', 'LEFT', 'TOP', 'BOTTOM', 'FRONT', 'BACK'],
-            	domElement: document.getElementById('orientCubeWrapper'),
-				domHome     : document.getElementById('goHome'),
-				domSaveHome : document.getElementById('saveHome')
-			}))
+            threeExtra.installNavigationCube(
+                new threeExtra.NavigationCubeParameters({
+                    scene,
+                    camera,
+                    renderer,
+                    controls: controler,
+                    renderFunctions,
+                    labels: ['RIGHT', 'LEFT', 'TOP', 'BOTTOM', 'FRONT', 'BACK'],
+                    domElement: document.getElementById('orientCubeWrapper'),
+                    domHome: document.getElementById('goHome'),
+                    domSaveHome: document.getElementById('saveHome'),
+                }),
+            )
 
-			// --------------------------------------------------
+            // --------------------------------------------------
 
-			window.addEventListener( 'resize', onWindowResize, false )
+            window.addEventListener('resize', onWindowResize, false)
 
-			// --------------------------------------------------
+            // --------------------------------------------------
 
-			const actionStack = new threeEdit.ActionStack(20, renderFunctions.render)
-			actionStack.addNotifier( msg => console.log(msg.type + ': '+ msg.name) )
+            const actionStack = new threeEdit.ActionStack(
+                20,
+                renderFunctions.render,
+            )
+            actionStack.addNotifier((msg) =>
+                console.log(msg.type + ': ' + msg.name),
+            )
 
-			const toolbar = new threeEdit.Toolbar(new threeEdit.ToolbarParameters({
-				scene, 
-				camera, 
-				renderer, 
-				controler, 
-				renderFunctions,
-				actionStack,
-				domElement: document.body,
-				controlerDomName: 'controler',
-				undoDomName: 'undo',
-				redoDomName: 'redo'
-			}))
-			toolbar.addTool('ruler',        'ruler')
-			toolbar.addTool('translate',    'translate')
-			toolbar.addTool('scale',        'scale')
-			toolbar.addTool('rotate',       'rotate')
-			toolbar.addTool('move-vertex',  'moveVertex')
-			toolbar.addTool('snap-vertex',  'snapVertex')
-			toolbar.addTool('collapse-vertex',  'collapseVertex')
-			toolbar.addTool('del-vertex',   'deleteVertex')
-			toolbar.addTool('del-face',     'deleteFace')
-			toolbar.addTool('flip-edge',    'flipEdge')
-			//toolbar.addTool('unzip',    	'unzip')
-			toolbar.addTool('smooth',        'laplacianSmooth')
-			toolbar.addTool('dump-info',    'dumpInfo')
-			toolbar.addTool('vertex-info',    'vertexInfo')
-			// toolbar.attachObject(mesh)
+            const toolbar = new threeEdit.Toolbar(
+                new threeEdit.ToolbarParameters({
+                    scene,
+                    camera,
+                    renderer,
+                    controler,
+                    renderFunctions,
+                    actionStack,
+                    domElement: document.body,
+                    controlerDomName: 'controler',
+                    undoDomName: 'undo',
+                    redoDomName: 'redo',
+                }),
+            )
+            toolbar.addTool('ruler', 'ruler')
+            toolbar.addTool('translate', 'translate')
+            toolbar.addTool('scale', 'scale')
+            toolbar.addTool('rotate', 'rotate')
+            toolbar.addTool('move-vertex', 'moveVertex')
+            toolbar.addTool('snap-vertex', 'snapVertex')
+            toolbar.addTool('collapse-vertex', 'collapseVertex')
+            toolbar.addTool('del-vertex', 'deleteVertex')
+            toolbar.addTool('del-face', 'deleteFace')
+            toolbar.addTool('flip-edge', 'flipEdge')
+            //toolbar.addTool('unzip',    	'unzip')
+            toolbar.addTool('smooth', 'laplacianSmooth')
+            toolbar.addTool('dump-info', 'dumpInfo')
+            toolbar.addTool('vertex-info', 'vertexInfo')
+            // toolbar.attachObject(mesh)
 
-			if (0) {
-				threeEdit.play({
-					mesh,
-					actionStack,
-					json: '[{"name":"MoveVertex","vertexID":64,"to":[-42.07844543457031,173.8583984375,40.05504608154297]},{"name":"MoveVertex","vertexID":60,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"MoveVertex","vertexID":5,"to":[141.11947631835938,106.94769287109375,-46.3559455871582]},{"name":"SnapVertex","vertexID":5,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"DeleteVertex","nodeID":52},{"name":"DeleteFace","faceID":200},{"name":"DeleteFace","faceID":200},{"name":"FlipEdge","v1":55,"v2":56,"face1ID":15,"face2ID":309,"face1IDs":[4,107,55],"face2IDs":[107,4,56]}]',
-					isAction: true,
-					display: false
-				})
-			}
+            if (0) {
+                threeEdit.play({
+                    mesh,
+                    actionStack,
+                    json: '[{"name":"MoveVertex","vertexID":64,"to":[-42.07844543457031,173.8583984375,40.05504608154297]},{"name":"MoveVertex","vertexID":60,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"MoveVertex","vertexID":5,"to":[141.11947631835938,106.94769287109375,-46.3559455871582]},{"name":"SnapVertex","vertexID":5,"to":[88.3094253540039,158.6025848388672,-18.376052856445312]},{"name":"DeleteVertex","nodeID":52},{"name":"DeleteFace","faceID":200},{"name":"DeleteFace","faceID":200},{"name":"FlipEdge","v1":55,"v2":56,"face1ID":15,"face2ID":309,"face1IDs":[4,107,55],"face2IDs":[107,4,56]}]',
+                    isAction: true,
+                    display: false,
+                })
+            }
 
-			function onWindowResize() {
-				const aspect = window.innerWidth / window.innerHeight;
-				camera.aspect = aspect;
-				camera.updateProjectionMatrix();
-				renderer.setSize( window.innerWidth, window.innerHeight )
-				controler.handleResize()
-				renderFunctions.render()
-			}
+            function onWindowResize() {
+                const aspect = window.innerWidth / window.innerHeight
+                camera.aspect = aspect
+                camera.updateProjectionMatrix()
+                renderer.setSize(window.innerWidth, window.innerHeight)
+                controler.handleResize()
+                renderFunctions.render()
+            }
 
-			function render() {
-				requestAnimationFrame(render)
-				renderFunctions.render()
-				
-			}
+            function render() {
+                requestAnimationFrame(render)
+                renderFunctions.render()
+            }
 
-			requestAnimationFrame(render)
-		</script>
-
-	</body>
+            requestAnimationFrame(render)
+        </script>
+    </body>
 </html>

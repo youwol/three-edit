@@ -20,10 +20,9 @@
         "doc": "rm -fr dist/docs && typedoc src/ --exclude src/lib --exclude src/tests --disableSources --out dist/docs --includeVersion --hideGenerator --theme pages-plugin",
         "serve": "http-server ../../../../ -p 89 -o devs/workspace/packages/three-edit/index.html"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "peerDependencies": {
-	"@youwol/dataframe": "0.x",
+        "@youwol/dataframe": "0.x",
         "@youwol/three-extra": "0.x",
         "@youwol/io": "0.x",
         "three": "^0.128.0",
@@ -32,6 +31,7 @@
     "devDependencies": {
         "@types/jest": "26.0.22",
         "@types/node": "14.14.37",
+        "@youwol/prettier-config": "^1.0.0",
         "@youwol/three-extra": "0.x",
         "@youwol/io": "0.x",
         "eslint": "7.23.0",
@@ -49,6 +49,7 @@
         "webpack": "^5.76.0",
         "webpack-cli": "4.6.0"
     },
+    "prettier": "@youwol/prettier-config",
     "youwol": {
         "pipeline": {
             "name": "yw_pipeline_webpack_ts",

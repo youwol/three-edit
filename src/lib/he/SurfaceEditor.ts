@@ -1,6 +1,6 @@
-import { SurfaceBuilder } from "./SurfaceBuilder";
-import { Surface } from "./Surface";
-import { Facet, Halfedge, Node } from "./combels";
+import { SurfaceBuilder } from './SurfaceBuilder'
+import { Surface } from './Surface'
+import { Facet, Halfedge, Node } from './combels'
 
 /**
  * @category Halfedge
@@ -67,7 +67,7 @@ export class SurfaceEditor extends SurfaceBuilder {
             h = g
         } while (h !== end)
 
-        edges_to_delete.forEach(edge => this.deleteEdge(edge))
+        edges_to_delete.forEach((edge) => this.deleteEdge(edge))
     }
 
     eraseNode(v: Node) {
@@ -82,7 +82,7 @@ export class SurfaceEditor extends SurfaceBuilder {
             e = e.nextAroundNode
         } while (e !== v.halfedge)
 
-        facets_to_delete.forEach(facet => this.eraseFacet(facet))
+        facets_to_delete.forEach((facet) => this.eraseFacet(facet))
         return true
     }
 
@@ -460,16 +460,22 @@ export class SurfaceEditor extends SurfaceBuilder {
 
         let e = this.makeTriangle(v1, v2, v3)
         if (e12) {
-            this.glue((e12.isBorder ? e12 : e12.opposite),
-                (e.next.isBorder ? e.next : e.next.opposite))
+            this.glue(
+                e12.isBorder ? e12 : e12.opposite,
+                e.next.isBorder ? e.next : e.next.opposite,
+            )
         }
         if (e23) {
-            this.glue((e23.isBorder ? e23 : e23.opposite),
-                (e.next.next.isBorder ? e.next.next : e.next.next.opposite))
+            this.glue(
+                e23.isBorder ? e23 : e23.opposite,
+                e.next.next.isBorder ? e.next.next : e.next.next.opposite,
+            )
         }
         if (e31) {
-            this.glue((e31.isBorder ? e31 : e31.opposite),
-                (e.isBorder ? e : e.opposite))
+            this.glue(
+                e31.isBorder ? e31 : e31.opposite,
+                e.isBorder ? e : e.opposite,
+            )
         }
 
         return true
@@ -479,20 +485,24 @@ export class SurfaceEditor extends SurfaceBuilder {
         if (!h0.isBorder) return false
         if (!h1.isBorder) return false
         if (h0.opposite.facet == h1.opposite.facet) return false
-        if (this.halfedgeExistsBetweenNodes(h0.node, h1.opposite.node) ||
-            this.halfedgeExistsBetweenNodes(h1.node, h0.opposite.node)) {
+        if (
+            this.halfedgeExistsBetweenNodes(h0.node, h1.opposite.node) ||
+            this.halfedgeExistsBetweenNodes(h1.node, h0.opposite.node)
+        ) {
             return false
         }
-        if (!this.canMergeNodes(h0, h1.opposite) || !this.canMergeNodes(h1, h0.opposite)) {
+        if (
+            !this.canMergeNodes(h0, h1.opposite) ||
+            !this.canMergeNodes(h1, h0.opposite)
+        ) {
             return false
         }
 
         return true
     }
 
-
     barycenter(p1: number[], p2: number[]) {
-        return [(p1[0] + p2[0]) / 2., (p1[1] + p2[1]) / 2., (p1[2] + p2[2]) / 2.]
+        return [(p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2, (p1[2] + p2[2]) / 2]
     }
 
     glue(h0: Halfedge, h1: Halfedge) {
@@ -538,7 +548,9 @@ export class SurfaceEditor extends SurfaceBuilder {
     canMergeNodes(h0: Halfedge, h1: Halfedge) {
         if (h0.node === h1.node) return true
 
-        return (this.orbitsAreCompatible(h0, h1) && this.orbitsAreCompatible(h1, h0))
+        return (
+            this.orbitsAreCompatible(h0, h1) && this.orbitsAreCompatible(h1, h0)
+        )
     }
 
     halfedgeExistsBetweenNodes(v1: Node, v2: Node) {
@@ -562,10 +574,17 @@ export class SurfaceEditor extends SurfaceBuilder {
             let cir_h1 = h1
             do {
                 let hh1 = cir_h1.opposite
-                if ((hh0.node === hh1.node) ||
-                    (hh0.node === h0.opposite.node && hh1.node === h1.opposite.node) ||
-                    (hh0.node === h1.opposite.node && hh1.node === h0.opposite.node)) {
-                    if (hh0.opposite.isBorder && hh1.isBorder || hh0.isBorder && hh1.opposite.isBorder) {
+                if (
+                    hh0.node === hh1.node ||
+                    (hh0.node === h0.opposite.node &&
+                        hh1.node === h1.opposite.node) ||
+                    (hh0.node === h1.opposite.node &&
+                        hh1.node === h0.opposite.node)
+                ) {
+                    if (
+                        (hh0.opposite.isBorder && hh1.isBorder) ||
+                        (hh0.isBorder && hh1.opposite.isBorder)
+                    ) {
                         // Found a potential opposite edge.
                         nb_common++
                     } else {
@@ -588,9 +607,8 @@ export class SurfaceEditor extends SurfaceBuilder {
         if (h.isBorderEdge) {
             return false
         }
-        return (h.node.isOnBorder || h.opposite.node.isOnBorder)
+        return h.node.isOnBorder || h.opposite.node.isOnBorder
     }
-
 
     unglue(h0: Halfedge, check: boolean) {
         console.assert(this.is_modified_)
@@ -608,7 +626,7 @@ export class SurfaceEditor extends SurfaceBuilder {
         let v0_on_border = v0.isOnBorder
         let v1_on_border = v1.isOnBorder
 
-        console.assert(!check || (v0_on_border || v1_on_border))
+        console.assert(!check || v0_on_border || v1_on_border)
 
         let n0 = this.newEdge()
         let n1 = n0.opposite
@@ -618,7 +636,7 @@ export class SurfaceEditor extends SurfaceBuilder {
 
         // If v1 is on the border, find the predecessor and
         // the successor of the newly created edges, and
-        // split v1 into two vertices. 
+        // split v1 into two vertices.
         if (v1_on_border) {
             let next0 = h0.prev.opposite
             while (!next0.isBorder) {
@@ -643,7 +661,7 @@ export class SurfaceEditor extends SurfaceBuilder {
 
         // If v0 is on the border, find the predecessor and
         // the successor of the newly created edges, and
-        // split v0 into two vertices. 
+        // split v0 into two vertices.
         if (v0_on_border) {
             let prev0 = h0.next.opposite
             while (!prev0.isBorder) {
@@ -661,7 +679,6 @@ export class SurfaceEditor extends SurfaceBuilder {
             this.setNodeOnOrbit(n1, this.newNode(v0))
             this.makeNodeKey(n1)
             this.makeNodeKey(h0)
-
         } else {
             this.setHalfedgeNode(n1, v0)
         }
@@ -671,13 +688,12 @@ export class SurfaceEditor extends SurfaceBuilder {
 
     flipNormals() {
         console.assert(this.is_modified_)
-        this.surface_.facets.forEach(facet => {
+        this.surface_.facets.forEach((facet) => {
             this.flipNormal(facet.halfedge)
         })
 
-        this.surface_.halfedges.forEach(h => {
-            if (h.isBorder && h.node === h.opposite.node)
-                this.flipNormal(h)
+        this.surface_.halfedges.forEach((h) => {
+            if (h.isBorder && h.node === h.opposite.node) this.flipNormal(h)
         })
     }
 
