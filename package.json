@@ -23,6 +23,7 @@
     "dependencies": {
     },
     "peerDependencies": {
+	"@youwol/dataframe": "0.x",
         "@youwol/three-extra": "0.x",
         "@youwol/io": "0.x",
         "three": "^0.128.0",
