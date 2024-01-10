@@ -1,6 +1,6 @@
 {
     "name": "@youwol/three-edit",
-    "version": "0.0.0",
+    "version": "0.0.1-wip",
     "license": "MIT",
     "description": "edition of triangulated meshes",
     "author": "fmaerten@youwol.com",
