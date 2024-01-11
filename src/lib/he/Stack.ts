@@ -7,7 +7,7 @@ export class Stack<T> {
     /**
      * Add a new element at the end of the stack
      */
-    push(element: T) { 
+    push(element: T) {
         this.items.push(element)
     }
 
@@ -46,7 +46,9 @@ export class Stack<T> {
      * Get the last element
      */
     get top() {
-        return this.items.length === 0 ? undefined : this.items[this.items.length-1]
+        return this.items.length === 0
+            ? undefined
+            : this.items[this.items.length - 1]
     }
     /**
      * Same as top()
@@ -55,7 +57,7 @@ export class Stack<T> {
         return this.top
     }
 
-    get isEmpty() { 
+    get isEmpty() {
         return this.items.length === 0
     }
 
@@ -64,18 +66,18 @@ export class Stack<T> {
     }
 
     toString() {
-        let str = ""
-        for (var i = 0; i < this.items.length; i++) {
-            str += this.items[i] + " "
+        let str = ''
+        for (let i = 0; i < this.items.length; i++) {
+            str += this.items[i] + ' '
         }
         return str
     }
 
-    forEach( cb: (item: any, index: number) => any ) {
+    forEach(cb: (item: any, index: number) => any) {
         return this.items.forEach(cb, this)
     }
 
-    map( cb: (item: any, index: number) => Array<any> ) {
+    map(cb: (item: any, index: number) => Array<any>) {
         return this.items.map(cb, this)
     }
 }

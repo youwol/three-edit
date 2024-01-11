@@ -1,9 +1,9 @@
-import { Tool, ToolParameters } from "./Tool"
+import { Tool, ToolParameters } from './Tool'
 
 type ToolCreator = (params: ToolParameters) => Tool
 
 export class ToolFactory {
-    private static _map: Map<string, ToolCreator> = new Map
+    private static _map: Map<string, ToolCreator> = new Map()
 
     static register(name: string, creator: ToolCreator) {
         ToolFactory._map.set(name, creator)

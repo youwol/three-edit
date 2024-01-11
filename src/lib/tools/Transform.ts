@@ -1,10 +1,10 @@
-import { Mesh, Object3D, Vector3 } from "three"
+import { Mesh, Object3D } from 'three'
 import { TransformControls } from '../third/TransformControls'
-import { MatrixTransformObjectAction } from "../actions"
+import { MatrixTransformObjectAction } from '../actions'
 import { Tool, ToolParameters } from './Tool'
 import { ToolFactory } from './factory'
-import { ActionStack } from "../actions/ActionStack"
-import { RenderFunction } from "@youwol/three-extra"
+import { ActionStack } from '../actions/ActionStack'
+import { RenderFunction } from '@youwol/three-extra'
 
 initialize()
 
@@ -12,7 +12,7 @@ initialize()
 
 function initialize() {
     const names = ['translate', 'rotate', 'scale']
-    names.forEach( name => {
+    names.forEach((name) => {
         ToolFactory.register(name, (params: ToolParameters) => {
             const tool = new Transform(params, name)
             setup(tool, params)
@@ -38,19 +38,33 @@ export class Transform extends TransformControls implements Tool {
         self.addEventListener('change', this.renderFct)
         //this.setSpace('world')
         self.setSpace('local')
-        self.addEventListener('dragging-changed', event => {
+        self.addEventListener('dragging-changed', (event) => {
             params.controler.enabled = !event.value
         })
         params.scene.add(this)
-        const domElement = params.domElement ? params.domElement : params.renderer.domElement
-        domElement.addEventListener( 'keydown', event => {
-            switch ( event.key ) {
-                case '+': self.setSize( self.size + 0.1 ); break;
-                case '-': self.setSize( Math.max( self.size - 0.1, 0.1 ) ); break;
-                case 'x': self.showX   = !self.showX; break;
-                case 'y': self.showY   = !self.showY; break;
-                case 'z': self.showZ   = !self.showZ; break;
-                case ' ': self.enabled = !self.enabled; break;
+        const domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
+        domElement.addEventListener('keydown', (event) => {
+            switch (event.key) {
+                case '+':
+                    self.setSize(self.size + 0.1)
+                    break
+                case '-':
+                    self.setSize(Math.max(self.size - 0.1, 0.1))
+                    break
+                case 'x':
+                    self.showX = !self.showX
+                    break
+                case 'y':
+                    self.showY = !self.showY
+                    break
+                case 'z':
+                    self.showZ = !self.showZ
+                    break
+                case ' ':
+                    self.enabled = !self.enabled
+                    break
             }
         })
     }
@@ -61,7 +75,7 @@ export class Transform extends TransformControls implements Tool {
         }
         this.mesh = object
 
-        const mesh = object as Mesh
+        const mesh = object
         mesh.geometry.computeBoundingSphere()
         const center = mesh.geometry.boundingSphere.center.clone()
 
@@ -88,14 +102,16 @@ export class Transform extends TransformControls implements Tool {
         const t = this.mesh.position
         const s = this.mesh.scale
         const r = this.mesh.rotation
-        let useless = (t.x===0 && t.y===0 && t.z===0)
-        useless = useless && (s.x===1 && s.y===1 && s.z===1)
-        useless = useless && (r.x===0 && r.y===0 && r.z===0)
+        let useless = t.x === 0 && t.y === 0 && t.z === 0
+        useless = useless && s.x === 1 && s.y === 1 && s.z === 1
+        useless = useless && r.x === 0 && r.y === 0 && r.z === 0
         if (useless === false) {
-            const action = new MatrixTransformObjectAction(this.mesh, this.mesh.matrixWorld.clone())
+            const action = new MatrixTransformObjectAction(
+                this.mesh,
+                this.mesh.matrixWorld.clone(),
+            )
             stack.do(action)
-        }
-        else {
+        } else {
             console.warn('Useless action')
         }
     }
@@ -107,19 +123,33 @@ function setup(tool: Transform, params: ToolParameters): void {
     const self = Object.getPrototypeOf(tool)
     self.addEventListener('change', params.renderFunctions.render)
     self.setSpace('world')
-    self.addEventListener('dragging-changed', event => {
+    self.addEventListener('dragging-changed', (event) => {
         params.controler.enabled = !event.value
     })
     params.scene.add(tool)
-    const domElement = params.domElement ? params.domElement : params.renderer.domElement
-    domElement.addEventListener( 'keydown', event => {
-        switch ( event.key ) {
-            case '+': self.setSize( self.size + 0.1 ); break;
-            case '-': self.setSize( Math.max( self.size - 0.1, 0.1 ) ); break;
-            case 'x': self.showX = ! self.showX; break;
-            case 'y': self.showY = ! self.showY; break;
-            case 'z': self.showZ = ! self.showZ; break;
-            case ' ': self.enabled = ! self.enabled; break;
+    const domElement = params.domElement
+        ? params.domElement
+        : params.renderer.domElement
+    domElement.addEventListener('keydown', (event) => {
+        switch (event.key) {
+            case '+':
+                self.setSize(self.size + 0.1)
+                break
+            case '-':
+                self.setSize(Math.max(self.size - 0.1, 0.1))
+                break
+            case 'x':
+                self.showX = !self.showX
+                break
+            case 'y':
+                self.showY = !self.showY
+                break
+            case 'z':
+                self.showZ = !self.showZ
+                break
+            case ' ':
+                self.enabled = !self.enabled
+                break
         }
     })
 }

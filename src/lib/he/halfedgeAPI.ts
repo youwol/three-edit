@@ -4,15 +4,15 @@ import { newArray } from '..'
 
 /**
  * This class is meant to simplify the use of the Halfedge data structure.
- * 
+ *
  * Usage:
  * ```ts
  * const api = new HalfedgeAPI(mesh)
  * api.addNotifier( _ => console.log('edting'))
- * 
+ *
  * api.collapseVertex(23)
  * api.eraseTriangle(265)
- * 
+ *
  * const position = new BufferAttribute(api.position, 3)
  * const index    = new BufferAttribute(api.index, 3)
  * ...
@@ -24,7 +24,10 @@ export class HalfedgeAPI {
 
     constructor(private mesh: Mesh) {
         const geom = mesh.geometry
-        const surface = Surface.create(geom.attributes.position.array, geom.index.array)
+        const surface = Surface.create(
+            geom.attributes.position.array,
+            geom.index.array,
+        )
         this.editor = new SurfaceEditor(surface)
     }
 
@@ -38,8 +41,12 @@ export class HalfedgeAPI {
 
     collapseVertex(id: number) {
         // find the node
-        if (id<0 || id>this.editor.surface().nbNodes) {
-            throw new Error(`vertex index (${id}) out of bounds (${this.editor.surface().nbNodes})`)
+        if (id < 0 || id > this.editor.surface().nbNodes) {
+            throw new Error(
+                `vertex index (${id}) out of bounds (${
+                    this.editor.surface().nbNodes
+                })`,
+            )
         }
 
         if (!this.editor.isModified) {
@@ -56,7 +63,13 @@ export class HalfedgeAPI {
         }
 
         // find the node
-        if (id<0 || id>this.editor.surface().nbNodes) throw new Error(`vertex index (${id}) out of bounds (${this.editor.surface().nbNodes})`)
+        if (id < 0 || id > this.editor.surface().nbNodes) {
+            throw new Error(
+                `vertex index (${id}) out of bounds (${
+                    this.editor.surface().nbNodes
+                })`,
+            )
+        }
         const v = this.editor.surface().node(id)
         this.editor.eraseNode(v)
         this.notify('eraseNode')
@@ -68,7 +81,13 @@ export class HalfedgeAPI {
         }
 
         // find the node
-        if (id<0 || id>this.editor.surface().nbFacets) throw new Error(`triangle index (${id}) out of bounds (${this.editor.surface().nbFacets})`)
+        if (id < 0 || id > this.editor.surface().nbFacets) {
+            throw new Error(
+                `triangle index (${id}) out of bounds (${
+                    this.editor.surface().nbFacets
+                })`,
+            )
+        }
         const f = this.editor.surface().facet(id)
         this.editor.eraseFacet(f)
         this.notify('eraseFacet')
@@ -119,7 +138,7 @@ export class HalfedgeAPI {
     /**
      * Return an array of positions (x,y,z) for the nodes (i.e., like geometry.attributes.position.array).
      * The array is the same type as geometry.attributes.position.array.
-     * 
+     *
      * Usage for three.js:
      * ```ts
      * const api = new SurfaceAPI(mesh)
@@ -134,8 +153,11 @@ export class HalfedgeAPI {
         }
 
         const nodes = this.editor.surface().nodesAsArray
-        const position = newArray(this.mesh.geometry.attributes.position.array, nodes.length)
-        for (let i=0; i<nodes.length; ++i) {
+        const position = newArray(
+            this.mesh.geometry.attributes.position.array,
+            nodes.length,
+        )
+        for (let i = 0; i < nodes.length; ++i) {
             position[i] = nodes[i]
         }
         return position
@@ -151,7 +173,7 @@ export class HalfedgeAPI {
 
         const ids = this.editor.surface().trianglesAsArray
         const index = newArray(this.mesh.geometry.index.array, ids.length)
-        for (let i=0; i<ids.length; ++i) {
+        for (let i = 0; i < ids.length; ++i) {
             index[i] = ids[i]
         }
         return index
@@ -166,8 +188,11 @@ export class HalfedgeAPI {
         }
 
         const nodes = this.editor.surface().bordersAsArray
-        const position = newArray(this.mesh.geometry.attributes.position.array, nodes.length)
-        for (let i=0; i<nodes.length; ++i) {
+        const position = newArray(
+            this.mesh.geometry.attributes.position.array,
+            nodes.length,
+        )
+        for (let i = 0; i < nodes.length; ++i) {
             position[i] = nodes[i]
         }
         return position
@@ -183,13 +208,13 @@ export class HalfedgeAPI {
 
         const ids = this.editor.surface().bordersAsArray
         const index = newArray(this.mesh.geometry.index.array, ids.length)
-        for (let i=0; i<ids.length; ++i) {
+        for (let i = 0; i < ids.length; ++i) {
             index[i] = ids[i]
         }
         return index
     }
 
     private notify(msg: any = undefined) {
-        this.notifiers.forEach( n => n(msg) )
+        this.notifiers.forEach((n) => n(msg))
     }
 }

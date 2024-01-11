@@ -1,24 +1,34 @@
-import { 
-    BufferAttribute, BufferGeometry, Camera, EventDispatcher, 
+import {
+    BufferAttribute,
+    BufferGeometry,
+    Camera,
+    EventDispatcher,
     Face3,
-    Line3, 
-    Line, 
-    LineBasicMaterial, 
-    Mesh, Plane, Raycaster, Scene, 
-    Vector2, Vector3, WebGLRenderer
-} from "three"
-import { RenderFunction } from "@youwol/three-extra"
+    Line3,
+    Line,
+    LineBasicMaterial,
+    Mesh,
+    Plane,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+} from 'three'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
 import { Action, FlipEdgeAction } from '../actions'
-import { ToolFactory }          from "./factory"
-import { Tool, ToolParameters } from "./Tool"
-import { Controler }            from "../controlers"
-import { ActionStack }         from "../actions/ActionStack"
-import { getSize }              from "../utils/getSize"
-import { createCircleSprite } from "@youwol/three-extra"
-import { getAdjacentFaces } from "../utils/topology"
+import { ToolFactory } from './factory'
+import { Tool, ToolParameters } from './Tool'
+import { Controler } from '../controlers'
+import { ActionStack } from '../actions/ActionStack'
+import { getSize } from '../utils/getSize'
+import { getAdjacentFaces } from '../utils/topology'
 
-ToolFactory.register('flipEdge', (params: ToolParameters) => new FlipEdgeTool(params) )
+ToolFactory.register(
+    'flipEdge',
+    (params: ToolParameters) => new FlipEdgeTool(params),
+)
 
 // ------------------------------------------------
 
@@ -31,38 +41,39 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
     renderFct: RenderFunction
     domElement: HTMLElement
 
-    raycaster = new Raycaster
-    mouse = new Vector2
+    raycaster = new Raycaster()
+    mouse = new Vector2()
     intersections = []
 
     mesh: Mesh = undefined
-    plane = new Plane
-    planeNormal = new Vector3
-    planePoint = new Vector3
+    plane = new Plane()
+    planeNormal = new Vector3()
+    planePoint = new Vector3()
     currentFace1: Face3 = undefined
     currentFace2: Face3 = undefined
     currentFaceIndex1 = -1
     currentFaceIndex2 = -1
     line: Line = undefined
-    
-    v1: number = -1
-    v2: number = -1
+
+    v1 = -1
+    v2 = -1
 
     // DEBUG
     marker = []
 
-    constructor(params: ToolParameters)
-    {
+    constructor(params: ToolParameters) {
         super()
         this.scene = params.scene
         this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
-        this.domElement = params.domElement ? params.domElement : params.renderer.domElement
+        this.domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
         this.renderFct = params.renderFunctions.render
         this.controler = params.controler
 
-        this.activate() 
+        this.activate()
     }
 
     getAction(): Action {
@@ -72,10 +83,10 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
     private activate() {
         const dom = this.domElement
 
-        dom.addEventListener('pointerdown' , this.onPointerDown  , false)
-        dom.addEventListener('pointermove' , this.onPointerMove  , false)
-        dom.addEventListener('pointerup'   , this.onPointerCancel, false )
-		dom.addEventListener('pointerleave', this.onPointerCancel, false )
+        dom.addEventListener('pointerdown', this.onPointerDown, false)
+        dom.addEventListener('pointermove', this.onPointerMove, false)
+        dom.addEventListener('pointerup', this.onPointerCancel, false)
+        dom.addEventListener('pointerleave', this.onPointerCancel, false)
         super.addEventListener('change', (e) => {
             this.track(e.event)
             this.renderFct()
@@ -83,14 +94,20 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
 
         dom.style.cursor = ''
 
-        const geometry = new BufferGeometry();
-        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 2 * 3 ), 3 ) )
-        const material = new LineBasicMaterial( { color: 0xffff00, transparent: false } )
+        const geometry = new BufferGeometry()
+        geometry.setAttribute(
+            'position',
+            new BufferAttribute(new Float32Array(2 * 3), 3),
+        )
+        const material = new LineBasicMaterial({
+            color: 0xffff00,
+            transparent: false,
+        })
         this.line = new Line(geometry, material)
         this.scene.add(this.line)
         this.line.visible = false
 
-        for (let i=0; i<4; ++i) {
+        for (let i = 0; i < 4; ++i) {
             this.marker[i] = createCircleSprite(0.04)
             this.marker[i].visible = false
             this.scene.add(this.marker[i])
@@ -100,17 +117,17 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
     dispose() {
         this.detachObject()
         const dom = this.domElement
-        dom.removeEventListener('pointerdown' , this.onPointerDown  , false)
-        dom.removeEventListener('pointermove' , this.onPointerMove  , false)
-        dom.removeEventListener('pointerup'   , this.onPointerCancel, false )
-        dom.removeEventListener('pointerleave', this.onPointerCancel, false )
+        dom.removeEventListener('pointerdown', this.onPointerDown, false)
+        dom.removeEventListener('pointermove', this.onPointerMove, false)
+        dom.removeEventListener('pointerup', this.onPointerCancel, false)
+        dom.removeEventListener('pointerleave', this.onPointerCancel, false)
         super.removeEventListener('change', (e) => {
             this.track(e.event)
             this.renderFct()
         })
 
         this.controler.enabled = true
-        dom.style.cursor = '';
+        dom.style.cursor = ''
     }
 
     attachObject(mesh: Mesh) {
@@ -133,7 +150,7 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             this.line.visible = false
             this.scene.remove(this.line)
 
-            for (let i=0; i<2; ++i) {
+            for (let i = 0; i < 2; ++i) {
                 this.scene.remove(this.marker[i])
             }
         }
@@ -141,61 +158,60 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
 
     onPointerDown = (e: PointerEvent) => {
         e.preventDefault()
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseDown(e)
-				break
-		}
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseDown(e)
+                break
+        }
     }
     onPointerMove = (e: PointerEvent) => {
-		e.preventDefault();
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseMove(e)
-				break
-			// TODO touch
-		}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseMove(e)
+                break
+            // TODO touch
+        }
     }
     onPointerCancel = (e: PointerEvent) => {
-		e.preventDefault()
-		switch (e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseUp(e)
-				break
-			// TODO touch
-		}
-	}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseUp(e)
+                break
+            // TODO touch
+        }
+    }
 
     onMouseDown = (e: MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
-        this.raycaster.setFromCamera( this.mouse, this.camera )
-        this.raycaster.intersectObject( this.mesh, false, this.intersections)
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+        this.raycaster.setFromCamera(this.mouse, this.camera)
+        this.raycaster.intersectObject(this.mesh, false, this.intersections)
 
         if (this.intersections.length > 0 && this.line.visible === true) {
             this.controler.enabled = false
-            this.actionStack.do( this.getAction() )
-        }
-        else {
+            this.actionStack.do(this.getAction())
+        } else {
             this.controler.enabled = true
         }
     }
 
     onMouseMove = (e: MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
         // Will call track(e) because of the following
-        super.dispatchEvent( {type: 'change', event: e} )
+        super.dispatchEvent({ type: 'change', event: e })
     }
     onMouseUp = (e: MouseEvent) => {
         this.controler.enabled = true
     }
 
     protected track(e: MouseEvent) {
-        this.raycaster.setFromCamera( this.mouse, this.camera )
+        this.raycaster.setFromCamera(this.mouse, this.camera)
 
         const intersect = this.findIndex()
         if (intersect && intersect.index !== -1) {
@@ -208,8 +224,8 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             this.currentFaceIndex1 = intersect.faceIndex
 
             const face = intersect.face
-            const linePosition = (this.line.geometry as BufferGeometry).attributes.position as BufferAttribute
-            const meshPosition = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
+            const linePosition = this.line.geometry.attributes.position
+            const meshPosition = this.mesh.geometry.attributes.position
 
             const p = intersect.point
 
@@ -217,7 +233,7 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
                 return new Vector3(
                     meshPosition.getX(face[id]),
                     meshPosition.getY(face[id]),
-                    meshPosition.getZ(face[id])
+                    meshPosition.getZ(face[id]),
                 )
             }
 
@@ -226,24 +242,25 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             }
 
             const ids = ['a', 'b', 'c']
-            const line = new Line3(new Vector3, new Vector3)
-            let start: Vector3 = undefined, end: Vector3 = undefined
+            const line = new Line3(new Vector3(), new Vector3())
+            let start: Vector3 = undefined,
+                end: Vector3 = undefined
             let minDist = 1e30
             let index = -1
             let i1 = ''
             let i2 = ''
-            const p1 = new Vector3
+            const p1 = new Vector3()
 
-            for (let i=0; i<3; ++i) {
-                const di1 = ids[i%3]
-                const di2 = ids[(i+1)%3]
+            for (let i = 0; i < 3; ++i) {
+                const di1 = ids[i % 3]
+                const di2 = ids[(i + 1) % 3]
                 line.start.copy(getPoint(di1))
-                line.end  .copy(getPoint(di2))
+                line.end.copy(getPoint(di2))
                 line.closestPointToPoint(p, false, p1)
                 const d1 = p1.distanceTo(p)
-                if (d1<minDist) {
+                if (d1 < minDist) {
                     start = line.start.clone()
-                    end   = line.end.clone()
+                    end = line.end.clone()
                     minDist = d1
                     index = i
                     i1 = di1
@@ -252,14 +269,18 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
             }
 
             // Check that the edge is adjacent to 2 triangles
-            const faces = getAdjacentFaces(this.mesh.geometry.index, face[i1], face[i2])
+            const faces = getAdjacentFaces(
+                this.mesh.geometry.index,
+                face[i1],
+                face[i2],
+            )
             if (faces.length !== 2) {
                 this.line.visible = false
                 this.marker[0].visible = false
                 this.marker[1].visible = false
                 return
             }
-            
+
             this.marker[0].position.copy(getPoint(i1))
             this.marker[0].visible = true
             this.marker[1].position.copy(getPoint(i2))
@@ -267,13 +288,12 @@ export class FlipEdgeTool extends EventDispatcher implements Tool {
 
             this.v1 = face[i1]
             this.v2 = face[i2]
-            
+
             linePosition.setXYZ(0, start.x, start.y, start.z)
             linePosition.setXYZ(1, end.x, end.y, end.z)
             this.mesh.updateMatrix()
-            this.line.geometry.applyMatrix4( this.mesh.matrix )
-        }
-        else {
+            this.line.geometry.applyMatrix4(this.mesh.matrix)
+        } else {
             this.line.visible = false
         }
 

@@ -1,6 +1,10 @@
 import {
-    Mesh, BufferGeometry, BufferAttribute,
-    LineBasicMaterial, LineSegments, Color
+    Mesh,
+    BufferGeometry,
+    BufferAttribute,
+    LineBasicMaterial,
+    LineSegments,
+    Color,
 } from 'three'
 import { HalfedgeAPI } from '../he/halfedgeAPI'
 
@@ -11,20 +15,19 @@ export function createSurfaceBorders(mesh: Mesh, color = '#000') {
     const api = new HalfedgeAPI(mesh)
     const borders = api.borderNodes
 
-    let geometry = undefined
+    const geometry = undefined
     if (1) {
         // Fake indices
         const indices = []
         let id = 0
-        for (let i=0; i<borders.length/6; ++i) {
+        for (let i = 0; i < borders.length / 6; ++i) {
             indices.push(id++, id++)
         }
 
         const geometry = new BufferGeometry()
         geometry.setAttribute('position', new BufferAttribute(borders, 3))
         geometry.setIndex(indices)
-    }
-    else {
+    } else {
         // TO BE TESTED
         const borders = api.borderIds
         const geometry = new BufferGeometry()
@@ -32,7 +35,7 @@ export function createSurfaceBorders(mesh: Mesh, color = '#000') {
         geometry.setIndex(borders)
     }
 
-    const material = new LineBasicMaterial({color: new Color(color)})
+    const material = new LineBasicMaterial({ color: new Color(color) })
     return new LineSegments(geometry, material)
 }
 

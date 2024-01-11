@@ -1,21 +1,32 @@
-import { 
-    BufferAttribute, BufferGeometry, Camera, EventDispatcher, 
-    Face3, 
-    Line, 
-    LineBasicMaterial, 
-    Mesh, Plane, Raycaster, Scene, 
-    Vector2, Vector3, WebGLRenderer
-} from "three"
-import { RenderFunction } from "@youwol/three-extra"
+import {
+    BufferAttribute,
+    BufferGeometry,
+    Camera,
+    EventDispatcher,
+    Face3,
+    Line,
+    LineBasicMaterial,
+    Mesh,
+    Plane,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+} from 'three'
+import { RenderFunction } from '@youwol/three-extra'
 
-import { DeleteFaceAction }     from '../actions'
-import { ToolFactory }          from "./factory"
-import { Tool, ToolParameters } from "./Tool"
-import { Controler }            from "../controlers"
-import { ActionStack }         from "../actions/ActionStack"
-import { getSize }              from "../utils/getSize"
+import { DeleteFaceAction } from '../actions'
+import { ToolFactory } from './factory'
+import { Tool, ToolParameters } from './Tool'
+import { Controler } from '../controlers'
+import { ActionStack } from '../actions/ActionStack'
+import { getSize } from '../utils/getSize'
 
-ToolFactory.register('deleteFace', (params: ToolParameters) => new DeleteFaceTool(params) )
+ToolFactory.register(
+    'deleteFace',
+    (params: ToolParameters) => new DeleteFaceTool(params),
+)
 
 // ------------------------------------------------
 
@@ -28,15 +39,15 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
     renderFct: RenderFunction
     domElement: HTMLElement
 
-    raycaster = new Raycaster
+    raycaster = new Raycaster()
     //marker = undefined
-    mouse = new Vector2
+    mouse = new Vector2()
     intersections = []
 
     mesh: Mesh = undefined
-    plane = new Plane
-    planeNormal = new Vector3
-    planePoint = new Vector3
+    plane = new Plane()
+    planeNormal = new Vector3()
+    planePoint = new Vector3()
     currentFace: Face3 = undefined
     currentFaceIndex = -1
     line: Line = undefined
@@ -47,20 +58,22 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
         this.actionStack = params.actionStack
         this.renderer = params.renderer
         this.camera = params.camera
-        this.domElement = params.domElement ? params.domElement : params.renderer.domElement
+        this.domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
         this.renderFct = params.renderFunctions.render
         this.controler = params.controler
 
-        this.activate() 
+        this.activate()
     }
 
     private activate() {
         const dom = this.domElement
 
-        dom.addEventListener('pointerdown' , this.onPointerDown  , false)
-        dom.addEventListener('pointermove' , this.onPointerMove  , false)
-        dom.addEventListener('pointerup'   , this.onPointerCancel, false )
-		dom.addEventListener('pointerleave', this.onPointerCancel, false )
+        dom.addEventListener('pointerdown', this.onPointerDown, false)
+        dom.addEventListener('pointermove', this.onPointerMove, false)
+        dom.addEventListener('pointerup', this.onPointerCancel, false)
+        dom.addEventListener('pointerleave', this.onPointerCancel, false)
         super.addEventListener('change', (e) => {
             this.track(e.event)
             this.renderFct()
@@ -68,9 +81,15 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
 
         dom.style.cursor = ''
 
-        const geometry = new BufferGeometry();
-        geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( 4 * 3 ), 3 ) )
-        const material = new LineBasicMaterial( { color: 0xffff00, transparent: false } )
+        const geometry = new BufferGeometry()
+        geometry.setAttribute(
+            'position',
+            new BufferAttribute(new Float32Array(4 * 3), 3),
+        )
+        const material = new LineBasicMaterial({
+            color: 0xffff00,
+            transparent: false,
+        })
         this.line = new Line(geometry, material)
         this.scene.add(this.line)
         this.line.visible = false
@@ -79,17 +98,17 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
     dispose() {
         this.detachObject()
         const dom = this.domElement
-        dom.removeEventListener('pointerdown' , this.onPointerDown  , false)
-        dom.removeEventListener('pointermove' , this.onPointerMove  , false)
-        dom.removeEventListener('pointerup'   , this.onPointerCancel, false )
-        dom.removeEventListener('pointerleave', this.onPointerCancel, false )
+        dom.removeEventListener('pointerdown', this.onPointerDown, false)
+        dom.removeEventListener('pointermove', this.onPointerMove, false)
+        dom.removeEventListener('pointerup', this.onPointerCancel, false)
+        dom.removeEventListener('pointerleave', this.onPointerCancel, false)
         super.removeEventListener('change', (e) => {
             this.track(e.event)
             this.renderFct()
         })
 
         this.controler.enabled = true
-        dom.style.cursor = '';
+        dom.style.cursor = ''
     }
 
     attachObject(mesh: Mesh) {
@@ -111,64 +130,65 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
 
     onPointerDown = (e: PointerEvent) => {
         e.preventDefault()
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseDown(e)
-				break
-			// TODO touch
-		}
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseDown(e)
+                break
+            // TODO touch
+        }
     }
     onPointerMove = (e: PointerEvent) => {
-		e.preventDefault();
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseMove(e)
-				break
-			// TODO touch
-		}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseMove(e)
+                break
+            // TODO touch
+        }
     }
     onPointerCancel = (e: PointerEvent) => {
-		e.preventDefault()
-		switch (e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseUp(e)
-				break
-			// TODO touch
-		}
-	}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseUp(e)
+                break
+            // TODO touch
+        }
+    }
 
     onMouseDown = (e: MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
-        this.raycaster.setFromCamera( this.mouse, this.camera )
-        this.raycaster.intersectObject( this.mesh, false, this.intersections)
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+        this.raycaster.setFromCamera(this.mouse, this.camera)
+        this.raycaster.intersectObject(this.mesh, false, this.intersections)
 
         if (this.intersections.length > 0) {
             this.controler.enabled = false
             const intersect = this.findIndex()
             if (intersect) {
-                this.actionStack.do( new DeleteFaceAction(this.mesh, intersect.faceIndex) )
+                this.actionStack.do(
+                    new DeleteFaceAction(this.mesh, intersect.faceIndex),
+                )
             }
-        }
-        else {
+        } else {
             this.controler.enabled = true
         }
     }
     onMouseMove = (e: MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
         // Will call track(e) because of the following
-        super.dispatchEvent( {type: 'change', event: e} )
+        super.dispatchEvent({ type: 'change', event: e })
     }
     onMouseUp = (e: MouseEvent) => {
         this.controler.enabled = true
     }
 
     private track(e: MouseEvent) {
-        this.raycaster.setFromCamera( this.mouse, this.camera )
+        this.raycaster.setFromCamera(this.mouse, this.camera)
 
         const intersect = this.findIndex()
         if (intersect && intersect.index !== -1) {
@@ -180,16 +200,15 @@ export class DeleteFaceTool extends EventDispatcher implements Tool {
             this.currentFaceIndex = intersect.faceIndex
 
             const face = intersect.face
-            const linePosition = (this.line.geometry as BufferGeometry).attributes.position as BufferAttribute
-            const meshPosition = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
-            linePosition.copyAt( 0, meshPosition, face.a )
-            linePosition.copyAt( 1, meshPosition, face.b )
-            linePosition.copyAt( 2, meshPosition, face.c )
-            linePosition.copyAt( 3, meshPosition, face.a )
+            const linePosition = this.line.geometry.attributes.position
+            const meshPosition = this.mesh.geometry.attributes.position
+            linePosition.copyAt(0, meshPosition, face.a)
+            linePosition.copyAt(1, meshPosition, face.b)
+            linePosition.copyAt(2, meshPosition, face.c)
+            linePosition.copyAt(3, meshPosition, face.a)
             this.mesh.updateMatrix()
-            this.line.geometry.applyMatrix4( this.mesh.matrix )
-        }
-        else {
+            this.line.geometry.applyMatrix4(this.mesh.matrix)
+        } else {
             this.line.visible = false
         }
 

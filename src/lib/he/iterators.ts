@@ -1,4 +1,4 @@
-import {Node, Halfedge, Facet} from './combels'
+import { Node, Halfedge, Facet } from './combels'
 
 /**
  * Loop over all nodes around a node
@@ -15,7 +15,7 @@ export function nodesAroundNodeFct(node: Node, cb: Function) {
 
 export function nodesAroundNode(node: Node): Node[] {
     let cir = node.halfedge
-    let i = 0
+    const i = 0
     const r = []
     do {
         const n = cir.opposite.node
@@ -53,7 +53,7 @@ export function facetsAroundNodeFct(node: Node, cb: Function) {
 
 export function facetsAroundNode(node: Node): Facet[] {
     let cir = node.halfedge
-    let i = 0
+    const i = 0
     const r = []
     do {
         const facet = cir.facet

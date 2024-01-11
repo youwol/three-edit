@@ -1,17 +1,26 @@
-import { 
-    BufferAttribute, BufferGeometry, Camera, EventDispatcher, 
-    Mesh, Plane, Points, Raycaster, Scene,
-    Vector2, Vector3, WebGLRenderer
-} from "three"
+import {
+    Camera,
+    EventDispatcher,
+    Mesh,
+    Plane,
+    Points,
+    Raycaster,
+    Scene,
+    Vector2,
+    Vector3,
+    WebGLRenderer,
+} from 'three'
 
-import { ToolFactory } from "./factory"
-import { Tool, ToolParameters } from "./Tool"
-import { Controler } from "../controlers"
-import { getSize } from "../utils/getSize"
-import { Mouse, RenderFunction } from "@youwol/three-extra"
-import { createCircleSprite } from "@youwol/three-extra"
+import { ToolFactory } from './factory'
+import { Tool, ToolParameters } from './Tool'
+import { Controler } from '../controlers'
+import { getSize } from '../utils/getSize'
+import { RenderFunction, createCircleSprite } from '@youwol/three-extra'
 
-ToolFactory.register('vertexInfo', (params: ToolParameters) => new VertexInfoTool(params) )
+ToolFactory.register(
+    'vertexInfo',
+    (params: ToolParameters) => new VertexInfoTool(params),
+)
 
 // ------------------------------------------------
 
@@ -23,29 +32,30 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
     renderFct: RenderFunction
     domElement: HTMLElement
 
-    raycaster = new Raycaster
+    raycaster = new Raycaster()
     marker = undefined
-    mouse = new Vector2
+    mouse = new Vector2()
     intersections = []
 
     mesh: Mesh = undefined
     points: Points = undefined
     dragging = false
-    plane = new Plane
-    planeNormal = new Vector3
-    planePoint = new Vector3
-    previousPos = new Vector3
+    plane = new Plane()
+    planeNormal = new Vector3()
+    planePoint = new Vector3()
+    previousPos = new Vector3()
     currentIndex = null
     posBefore = undefined
-    posAfter  = undefined
+    posAfter = undefined
 
-    constructor(params: ToolParameters)
-    {
+    constructor(params: ToolParameters) {
         super()
         this.scene = params.scene
         this.renderer = params.renderer
         this.camera = params.camera
-        this.domElement = params.domElement ? params.domElement : params.renderer.domElement
+        this.domElement = params.domElement
+            ? params.domElement
+            : params.renderer.domElement
         this.renderFct = params.renderFunctions.render
         this.controler = params.controler
 
@@ -55,10 +65,10 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
     private activate() {
         const dom = this.domElement
 
-        dom.addEventListener('pointerdown' , this.onPointerDown  , false)
-		dom.addEventListener('pointerup'   , this.onPointerCancel, false )
-        dom.addEventListener('pointermove' , this.onPointerMove  , false)
-		dom.addEventListener('pointerleave', this.onPointerCancel, false )
+        dom.addEventListener('pointerdown', this.onPointerDown, false)
+        dom.addEventListener('pointerup', this.onPointerCancel, false)
+        dom.addEventListener('pointermove', this.onPointerMove, false)
+        dom.addEventListener('pointerleave', this.onPointerCancel, false)
 
         super.addEventListener('change', (e) => {
             this.track(e.event)
@@ -79,14 +89,14 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
         })
 
         const dom = this.domElement
-        dom.removeEventListener('pointerdown' , this.onPointerDown  , false)
-		dom.removeEventListener('pointerup'   , this.onPointerCancel, false )
-        dom.removeEventListener('pointermove' , this.onPointerMove  , false)
-        dom.removeEventListener('pointerleave', this.onPointerCancel, false )
+        dom.removeEventListener('pointerdown', this.onPointerDown, false)
+        dom.removeEventListener('pointerup', this.onPointerCancel, false)
+        dom.removeEventListener('pointermove', this.onPointerMove, false)
+        dom.removeEventListener('pointerleave', this.onPointerCancel, false)
 
         this.scene.remove(this.marker)
         this.controler.enabled = true
-        dom.style.cursor = '';
+        dom.style.cursor = ''
     }
 
     attachObject(mesh: Mesh) {
@@ -110,48 +120,48 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
     private doAction(): void {
         if (this.currentIndex !== -1) {
             const id = this.currentIndex
-            const pos = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
+            const pos = this.mesh.geometry.attributes.position
             const p = new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id))
             this.currentIndex = -1
-            console.log(id+':', p.x, p.y, p.z)
+            console.log(id + ':', p.x, p.y, p.z)
         }
     }
 
     onPointerDown = (e: PointerEvent) => {
         e.preventDefault()
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseDown(e)
-				break
-			// TODO touch
-		}
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseDown(e)
+                break
+            // TODO touch
+        }
     }
     onPointerMove = (e: PointerEvent) => {
-		e.preventDefault();
-		switch(e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseMove(e)
-				break
-			// TODO touch
-		}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseMove(e)
+                break
+            // TODO touch
+        }
     }
     onPointerCancel = (e: PointerEvent) => {
-		e.preventDefault()
-		switch (e.pointerType) {
-			case 'mouse':
-			case 'pen':
-				this.onMouseUp(e)
-				break
-			// TODO touch
-		}
-	}
+        e.preventDefault()
+        switch (e.pointerType) {
+            case 'mouse':
+            case 'pen':
+                this.onMouseUp(e)
+                break
+            // TODO touch
+        }
+    }
     onMouseDown = (e: MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
-        this.raycaster.setFromCamera( this.mouse, this.camera )
-        this.raycaster.intersectObject( this.points, false, this.intersections)
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+        this.raycaster.setFromCamera(this.mouse, this.camera)
+        this.raycaster.intersectObject(this.points, false, this.intersections)
 
         if (this.intersections.length > 0) {
             this.controler.enabled = false
@@ -159,17 +169,16 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
             if (this.currentIndex !== -1) {
                 this.previousPos = intersect.vertex
             }
-        }
-        else {
+        } else {
             this.controler.enabled = true
         }
     }
 
-    onMouseMove = (e:MouseEvent) => {
-        this.mouse.x =   ( e.clientX / window.innerWidth  ) * 2 - 1
-        this.mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1
+    onMouseMove = (e: MouseEvent) => {
+        this.mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+        this.mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
         // Will call track(e) because of the following
-        super.dispatchEvent( {type: 'change', event: e} )
+        super.dispatchEvent({ type: 'change', event: e })
     }
 
     onMouseUp = (e: MouseEvent) => {
@@ -179,8 +188,8 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
     }
 
     private track(e: MouseEvent) {
-        this.raycaster.setFromCamera( this.mouse, this.camera )
-        const pos = (this.mesh.geometry as BufferGeometry).attributes.position as BufferAttribute
+        this.raycaster.setFromCamera(this.mouse, this.camera)
+        const pos = this.mesh.geometry.attributes.position
 
         // Highlight a vertex close to the cursor
         const intersect = this.findIndex()
@@ -188,16 +197,17 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
             const id = intersect.index
             this.setPlane(intersect.point)
             this.raycaster.ray.intersectPlane(this.plane, this.planePoint)
-            this.marker.position.copy( new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id)) )
+            this.marker.position.copy(
+                new Vector3(pos.getX(id), pos.getY(id), pos.getZ(id)),
+            )
             this.marker.visible = true
-        }
-        else {
+        } else {
             this.marker.visible = false
         }
         this.intersections.length = 0 // reset the result array
     }
 
-    private findIndex(): {index:number, point: Vector3, vertex: Vector3} {
+    private findIndex(): { index: number; point: Vector3; vertex: Vector3 } {
         const intersects = this.raycaster.intersectObject(this.points)
         if (intersects.length === 0) {
             this.currentIndex = -1
@@ -206,13 +216,13 @@ export class VertexInfoTool extends EventDispatcher implements Tool {
 
         const inter = intersects[0]
         const index = inter.index
-        const x = (this.mesh.geometry as BufferGeometry).attributes.position.getX(index)
-        const y = (this.mesh.geometry as BufferGeometry).attributes.position.getY(index)
-        const z = (this.mesh.geometry as BufferGeometry).attributes.position.getZ(index)
+        const x = this.mesh.geometry.attributes.position.getX(index)
+        const y = this.mesh.geometry.attributes.position.getY(index)
+        const z = this.mesh.geometry.attributes.position.getZ(index)
         //console.log(index, x, y, z)
         this.currentIndex = index
         this.setPlane(inter.point)
-        return {index, point: inter.point, vertex: new Vector3(x,y,z)}
+        return { index, point: inter.point, vertex: new Vector3(x, y, z) }
     }
 
     // Plane where the vertex is going to move

@@ -1,4 +1,4 @@
-import { Box3, Object3D, Sphere } from "three"
+import { Box3, Object3D, Sphere } from 'three'
 
 /**
  * Get an idea of the point size and Raycaster threshold for a given object.
@@ -11,8 +11,8 @@ import { Box3, Object3D, Sphere } from "three"
  * @param o The object
  * @param percent The percent of the object radius. Default is 3%
  */
-export function getSize(o: Object3D, percent=1) {
+export function getSize(o: Object3D, percent = 1) {
     const bbox = new Box3().setFromObject(o)
-    const sphere = bbox.getBoundingSphere(new Sphere)
-    return sphere.radius*percent/100
+    const sphere = bbox.getBoundingSphere(new Sphere())
+    return (sphere.radius * percent) / 100
 }
